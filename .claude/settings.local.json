@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(New-Item -Path \"c:\\\\Users\\\\dell\\\\Desktop\\\\FieldLog\\\\src\\\\db\\\\taskRepository.ts\" -ItemType File -Force)",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"created\")",
+      "PowerShell(New-Item -Path \"c:\\\\Users\\\\dell\\\\Desktop\\\\FieldLog\\\\src\\\\hooks\\\\useTask.ts\" -ItemType File -Force)"
+    ]
+  }
+}

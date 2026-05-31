@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Task } from "../../../types";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   lat: number;
   lng: number;
   onClose: () => void;
-  onSave: (task: Omit<Task, "id" | "status">) => void;
+  onSave: (task: Omit<Task, "id" | "status">) => Promise<void>;
 }
 export default function AddTaskModal({
   visible,
@@ -18,13 +18,19 @@ export default function AddTaskModal({
 }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    if (!title.trim()) return;
-    onSave({ title, description, lat, lng });
-    setTitle("");
-    setDescription("");
-    onClose();
+  const handleSave = async () => {
+    if (!title.trim() || saving) return;
+    setSaving(true);
+    try {
+      await onSave({ title: title.trim(), description: description.trim(), lat, lng });
+      setTitle("");
+      setDescription("");
+      onClose();
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -53,10 +59,15 @@ export default function AddTaskModal({
           />
 
           <TouchableOpacity
-            className="bg-blue-500 rounded-xl p-4 items-center mb-3"
+            className={`rounded-xl p-4 items-center mb-3 ${saving ? "bg-blue-300" : "bg-blue-500"}`}
             onPress={handleSave}
+            disabled={saving}
           >
-            <Text className="text-white font-bold text-base">Kaydet</Text>
+            {saving ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text className="text-white font-bold text-base">Kaydet</Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity className="items-center p-3" onPress={onClose}>
