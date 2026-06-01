@@ -1,8 +1,10 @@
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
 import "./global.css";
 import { useAppInit } from "./src/hooks/useAppInit";
 import RootNavigator from "./src/navigation/RootNavigator";
+import { store } from "./src/store";
 
 export default function App() {
   const { ready, error } = useAppInit();
@@ -24,8 +26,10 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <RootNavigator />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <RootNavigator />
+      </SafeAreaProvider>
+    </Provider>
   );
 }

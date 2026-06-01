@@ -1,11 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Task, TaskStatus } from "../types";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  getAllTasks,
-  createTask,
-  updateTaskStatus,
-  deleteTask,
-} from "../db/taskRepository";
+  fetchTasks,
+  addTask,
+  updateStatus,
+  removeTask,
+  selectAllTasks,
+  selectTasksLoading,
+  selectTasksError,
+} from "../store/slices/taskSlice";
 
 interface UseTaskReturn {
   tasks: Task[];
@@ -14,50 +18,52 @@ interface UseTaskReturn {
   addTask: (input: Omit<Task, "id">) => Promise<Task>;
   changeStatus: (id: number, status: TaskStatus) => Promise<void>;
   removeTask: (id: number) => Promise<void>;
-  refresh: () => Promise<void>;
+  refresh: () => void;
 }
 
 export function useTask(): UseTaskReturn {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const tasks = useAppSelector(selectAllTasks);
+  const loading = useAppSelector(selectTasksLoading);
+  const error = useAppSelector(selectTasksError);
 
-  const load = useCallback(async () => {
-    try {
-      setError(null);
-      const data = await getAllTasks();
-      setTasks(data);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Görevler yüklenemedi");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const refresh = useCallback(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
-  const addTask = useCallback(async (input: Omit<Task, "id">): Promise<Task> => {
-    const created = await createTask(input);
-    setTasks((prev) => [created, ...prev]);
-    return created;
-  }, []);
+  const handleAddTask = useCallback(
+    async (input: Omit<Task, "id">): Promise<Task> => {
+      const result = await dispatch(addTask(input)).unwrap();
+      return result;
+    },
+    [dispatch]
+  );
 
   const changeStatus = useCallback(
     async (id: number, status: TaskStatus): Promise<void> => {
-      await updateTaskStatus(id, status);
-      setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, status } : t))
-      );
+      await dispatch(updateStatus({ id, status })).unwrap();
     },
-    []
+    [dispatch]
   );
 
-  const removeTask = useCallback(async (id: number): Promise<void> => {
-    await deleteTask(id);
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  const handleRemoveTask = useCallback(
+    async (id: number): Promise<void> => {
+      await dispatch(removeTask(id)).unwrap();
+    },
+    [dispatch]
+  );
 
-  return { tasks, loading, error, addTask, changeStatus, removeTask, refresh: load };
+  return {
+    tasks,
+    loading,
+    error,
+    addTask: handleAddTask,
+    changeStatus,
+    removeTask: handleRemoveTask,
+    refresh,
+  };
 }
