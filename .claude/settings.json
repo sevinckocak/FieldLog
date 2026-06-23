@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); deps=d.get\\('dependencies',{}\\); print\\('reanimated in expo deps:', deps.get\\('react-native-reanimated','not found'\\)\\)\")",
+      "PowerShell(taskkill /PID 31128 /F)",
+      "PowerShell(cd \"C:\\\\Users\\\\dell\\\\Desktop\\\\FieldLog\"; Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"npx expo start --clear\" -WindowStyle Normal)"
+    ]
+  }
+}

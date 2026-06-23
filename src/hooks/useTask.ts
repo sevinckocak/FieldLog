@@ -28,7 +28,7 @@ export function useTask(): UseTaskReturn {
   const error = useAppSelector(selectTasksError);
 
   const refresh = useCallback(() => {
-    dispatch(fetchTasks());
+    dispatch(fetchTasks({ force: true }));
   }, [dispatch]);
 
   useEffect(() => {

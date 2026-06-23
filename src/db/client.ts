@@ -18,13 +18,25 @@ export async function initDatabase(): Promise<void> {
     PRAGMA journal_mode = WAL;
 
     CREATE TABLE IF NOT EXISTS tasks (
-      id        INTEGER PRIMARY KEY AUTOINCREMENT,
-      title     TEXT    NOT NULL,
-      description TEXT  NOT NULL DEFAULT '',
-      lat       REAL    NOT NULL,
-      lng       REAL    NOT NULL,
-      status    TEXT    NOT NULL DEFAULT 'draft',
-      created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      title       TEXT    NOT NULL,
+      description TEXT    NOT NULL DEFAULT '',
+      lat         REAL    NOT NULL,
+      lng         REAL    NOT NULL,
+      status      TEXT    NOT NULL DEFAULT 'draft',
+      created_at  INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+      firestore_id TEXT,
+      needs_sync  INTEGER NOT NULL DEFAULT 1
     );
   `);
+
+  // Mevcut DB'ye yeni kolonlar ekle (migration) — hata fırlatırsa kolon zaten var
+  try {
+    await database.execAsync("ALTER TABLE tasks ADD COLUMN firestore_id TEXT;");
+  } catch {}
+  try {
+    await database.execAsync(
+      "ALTER TABLE tasks ADD COLUMN needs_sync INTEGER NOT NULL DEFAULT 1;"
+    );
+  } catch {}
 }
