@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import MapScreen from "../features/map/screens/MapScreen";
 import TaskListScreen from "../features/tasks/screens/TaskListScreen";
+import ProfileScreen from "../features/profile/screens/ProfileScreen";
 import { useTheme } from "../hooks/useTheme";
 
 const Tab = createBottomTabNavigator();
@@ -39,6 +40,15 @@ export default function TabNavigator() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profil"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" color={color} size={size} />
           ),
         }}
       />
