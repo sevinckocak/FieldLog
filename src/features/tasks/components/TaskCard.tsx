@@ -22,10 +22,11 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
   synced: "Senkronize",
 };
 
-const STATUS_COLOR: Record<TaskStatus, string> = {
-  draft: "bg-gray-100 text-gray-600",
-  active: "bg-green-100 text-green-700",
-  synced: "bg-blue-100 text-blue-700",
+// NativeWind tam sınıf string'lerini statik görmeli — parçalara bölme
+const STATUS_STYLES: Record<TaskStatus, { badge: string; text: string }> = {
+  draft:  { badge: "bg-gray-100 dark:bg-gray-800",  text: "text-gray-600 dark:text-gray-400" },
+  active: { badge: "bg-green-100 dark:bg-green-950", text: "text-green-700 dark:text-green-400" },
+  synced: { badge: "bg-blue-100 dark:bg-blue-950",   text: "text-blue-700 dark:text-blue-400" },
 };
 
 function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCardProps) {
@@ -34,9 +35,9 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
   };
 
   return (
-    <View className="mx-4 my-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+    <View className="mx-4 my-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
       <View className="flex-row items-start">
-        {/* Checkbox (seçim modunda gösterilir) */}
+        {/* Seçim checkbox'ı */}
         {onSelect !== undefined && (
           <TouchableOpacity
             onPress={() => onSelect(task.id)}
@@ -47,7 +48,7 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
               className={`w-5 h-5 rounded border-2 items-center justify-center ${
                 selected
                   ? "bg-blue-500 border-blue-500"
-                  : "border-gray-300 bg-white"
+                  : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900"
               }`}
             >
               {selected && (
@@ -62,38 +63,36 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
           <View className="flex-row items-start justify-between">
             <View className="flex-1 mr-3">
               <Text
-                className="text-base font-semibold text-gray-900"
+                className="text-base font-semibold text-gray-900 dark:text-gray-100"
                 numberOfLines={1}
               >
                 {task.title}
               </Text>
               {task.description.length > 0 && (
                 <Text
-                  className="text-sm text-gray-500 mt-1"
+                  className="text-sm text-gray-500 dark:text-gray-400 mt-1"
                   numberOfLines={2}
                 >
                   {task.description}
                 </Text>
               )}
-              <Text className="text-xs text-gray-400 mt-2">
+              <Text className="text-xs text-gray-400 dark:text-gray-500 mt-2">
                 {task.lat.toFixed(5)}, {task.lng.toFixed(5)}
               </Text>
             </View>
 
             <TouchableOpacity
               onPress={handleCycleStatus}
-              className={`px-2 py-1 rounded-full ${STATUS_COLOR[task.status].split(" ")[0]}`}
+              className={`px-2 py-1 rounded-full ${STATUS_STYLES[task.status].badge}`}
             >
-              <Text
-                className={`text-xs font-medium ${STATUS_COLOR[task.status].split(" ")[1]}`}
-              >
+              <Text className={`text-xs font-medium ${STATUS_STYLES[task.status].text}`}>
                 {STATUS_LABEL[task.status]}
               </Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity onPress={() => onRemove(task.id)} className="mt-3 self-end">
-            <Text className="text-xs text-red-400">Sil</Text>
+            <Text className="text-xs text-red-400 dark:text-red-400">Sil</Text>
           </TouchableOpacity>
         </View>
       </View>

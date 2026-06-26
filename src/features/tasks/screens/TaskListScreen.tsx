@@ -25,7 +25,6 @@ function TaskListScreen() {
   const { location } = useLocation();
   const routeLoading = useAppSelector(selectRouteLoading);
 
-  // Seçim sırası önemli: array kullanıyoruz (Set değil)
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const toggleSelect = useCallback((id: number) => {
@@ -47,7 +46,6 @@ function TaskListScreen() {
       );
 
       setSelectedIds([]);
-      // Harita tabına geç
       (navigation as any).navigate("Harita");
     },
     [dispatch, location, navigation, selectedIds, tasks]
@@ -94,7 +92,7 @@ function TaskListScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View className="flex-1 items-center justify-center bg-gray-50 dark:bg-gray-950">
         <ActivityIndicator size="large" color="#3b82f6" />
       </View>
     );
@@ -102,7 +100,7 @@ function TaskListScreen() {
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center px-6">
+      <View className="flex-1 items-center justify-center px-6 bg-gray-50 dark:bg-gray-950">
         <Text className="text-red-500 text-center">{error}</Text>
       </View>
     );
@@ -111,7 +109,7 @@ function TaskListScreen() {
   const hasSelection = selectedIds.length > 0;
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-950">
       <FlatList
         data={tasks}
         keyExtractor={keyExtractor}
@@ -125,8 +123,8 @@ function TaskListScreen() {
         }
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center">
-            <Text className="text-gray-400 text-base">Henüz görev yok</Text>
-            <Text className="text-gray-300 text-sm mt-1">
+            <Text className="text-gray-500 dark:text-gray-400 text-base">Henüz görev yok</Text>
+            <Text className="text-gray-400 dark:text-gray-500 text-sm mt-1">
               Haritada uzun bas ve görev ekle
             </Text>
           </View>
@@ -135,19 +133,18 @@ function TaskListScreen() {
 
       {/* Rota oluştur paneli */}
       {hasSelection && (
-        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
-          <Text className="text-sm text-gray-500 mb-2 text-center">
+        <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 shadow-lg">
+          <Text className="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">
             {selectedIds.length} görev seçildi
           </Text>
 
           {routeLoading ? (
             <View className="items-center py-2">
               <ActivityIndicator size="small" color="#3b82f6" />
-              <Text className="text-xs text-gray-400 mt-1">Rota hesaplanıyor...</Text>
+              <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">Rota hesaplanıyor...</Text>
             </View>
           ) : (
             <View className="flex-row gap-2">
-              {/* Sıraya göre rota */}
               <TouchableOpacity
                 className="flex-1 bg-blue-500 rounded-xl py-3 items-center"
                 onPress={() => handleRoute(false)}
@@ -157,7 +154,6 @@ function TaskListScreen() {
                 <Text className="text-blue-100 text-xs mt-0.5">Seçtiğin sıra</Text>
               </TouchableOpacity>
 
-              {/* Optimize edilmiş rota */}
               <TouchableOpacity
                 className="flex-1 bg-emerald-500 rounded-xl py-3 items-center"
                 onPress={() => handleRoute(true)}
@@ -179,7 +175,7 @@ function TaskListScreen() {
             className="mt-2 items-center"
             onPress={() => setSelectedIds([])}
           >
-            <Text className="text-xs text-gray-400">Seçimi Temizle</Text>
+            <Text className="text-xs text-gray-400 dark:text-gray-500">Seçimi Temizle</Text>
           </TouchableOpacity>
         </View>
       )}

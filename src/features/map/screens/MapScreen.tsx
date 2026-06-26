@@ -1,11 +1,12 @@
-import { useEffect, useRef } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, {
   LongPressEvent,
   MapType,
   Marker,
   Polyline,
 } from "react-native-maps";
+import { useTheme } from "../../../hooks/useTheme";
 import useLocation from "../../../hooks/useLocation";
 import { useTask } from "../../../hooks/useTask";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -16,9 +17,9 @@ import {
   selectRoutePoints,
   selectRoutePolyline,
 } from "../../../store/slices/routeSlice";
-import { useState } from "react";
 import { Task } from "../../../types";
 import AddTaskModal from "../components/AddTaskModal";
+import ThemeSwitch from "../components/ThemeSwitch";
 
 const MAP_TYPES: { label: string; value: MapType }[] = [
   { label: "Standard", value: "standard" },
@@ -37,6 +38,7 @@ function routeMarkerColor(index: number, total: number): string {
 export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   const dispatch = useAppDispatch();
+  const { colors } = useTheme();
   const { location, error: locationError } = useLocation();
   const { tasks, addTask } = useTask();
 
@@ -170,33 +172,44 @@ export default function MapScreen() {
         )}
       </MapView>
 
-      {/* Harita tipi seçici */}
+      {/* Theme switch - sol üst */}
+      <View className="absolute top-4 left-4">
+        <ThemeSwitch />
+      </View>
+
+      {/* Harita tipi seçici - sağ üst */}
       <View className="absolute top-4 right-4">
         <TouchableOpacity
-          className="bg-white rounded-lg px-3 py-2 shadow"
+          className="rounded-lg px-3 py-2"
+          style={[styles.shadow, { backgroundColor: colors.mapOverlay }]}
           onPress={() => setSelectorVisible((v) => !v)}
         >
-          <Text className="text-gray-800 font-medium text-sm">
+          <Text className="font-medium text-sm" style={{ color: colors.textPrimary }}>
             {MAP_TYPES.find((t) => t.value === mapType)?.label ?? "Harita"}
           </Text>
         </TouchableOpacity>
 
         {selectorVisible && (
-          <View className="mt-1 bg-white rounded-lg shadow overflow-hidden">
+          <View
+            className="mt-1 rounded-lg overflow-hidden"
+            style={[styles.shadow, { backgroundColor: colors.mapOverlay }]}
+          >
             {MAP_TYPES.map((type) => (
               <TouchableOpacity
                 key={type.value}
-                className={`px-4 py-2 ${
-                  mapType === type.value ? "bg-blue-50" : "bg-white"
-                }`}
+                className="px-4 py-2"
+                style={{
+                  backgroundColor:
+                    mapType === type.value ? colors.primaryLight : 'transparent',
+                }}
                 onPress={() => handleSelectMapType(type.value)}
               >
                 <Text
-                  className={`text-sm ${
-                    mapType === type.value
-                      ? "text-blue-600 font-semibold"
-                      : "text-gray-700"
-                  }`}
+                  className="text-sm"
+                  style={{
+                    color: mapType === type.value ? colors.primary : colors.textSecondary,
+                    fontWeight: mapType === type.value ? '600' : 'normal',
+                  }}
                 >
                   {type.label}
                 </Text>
@@ -208,50 +221,69 @@ export default function MapScreen() {
 
       {/* Rota bilgi paneli */}
       {routeActive && (
-        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3">
+        <View
+          className="absolute bottom-0 left-0 right-0 px-4 py-3"
+          style={{
+            backgroundColor: colors.mapOverlay,
+            borderTopWidth: 1,
+            borderTopColor: colors.mapOverlayBorder,
+          }}
+        >
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-sm font-semibold text-gray-800">
+            <Text className="text-sm font-semibold" style={{ color: colors.textPrimary }}>
               {routeOptimized ? "Optimize Edilmiş Rota" : "Seçili Sıra Rotası"}
             </Text>
             <TouchableOpacity
               onPress={() => dispatch(clearRoute())}
-              className="bg-red-50 px-3 py-1.5 rounded-lg"
+              className="px-3 py-1.5 rounded-lg"
+              style={{ backgroundColor: colors.dangerLight }}
             >
-              <Text className="text-red-500 text-xs font-medium">Rotayı İptal Et</Text>
+              <Text className="text-xs font-medium" style={{ color: colors.dangerText }}>
+                Rotayı İptal Et
+              </Text>
             </TouchableOpacity>
           </View>
 
           {/* Durak listesi */}
           <View className="flex-row flex-wrap gap-1">
-            {routePoints.map((point, index) => (
-              <View
-                key={index}
-                className={`flex-row items-center px-2 py-1 rounded-full ${
-                  index === 0
-                    ? "bg-green-100"
-                    : index === routePoints.length - 1
-                    ? "bg-red-100"
-                    : "bg-orange-100"
-                }`}
-              >
+            {routePoints.map((point, index) => {
+              const isStart = index === 0;
+              const isEnd = index === routePoints.length - 1;
+              const badgeBg = isStart
+                ? colors.successLight
+                : isEnd
+                ? colors.dangerLight
+                : colors.warningLight;
+              const dotColor = isStart
+                ? colors.success
+                : isEnd
+                ? colors.danger
+                : colors.warning;
+              return (
                 <View
-                  className={`w-3 h-3 rounded-full mr-1 ${
-                    index === 0
-                      ? "bg-green-500"
-                      : index === routePoints.length - 1
-                      ? "bg-red-500"
-                      : "bg-orange-500"
-                  }`}
-                />
-                <Text
-                  className="text-xs text-gray-700"
-                  numberOfLines={1}
-                  style={{ maxWidth: 80 }}
+                  key={index}
+                  className="flex-row items-center px-2 py-1 rounded-full"
+                  style={{ backgroundColor: badgeBg }}
                 >
-                  {index === 0 ? "Konum" : point.title}
-                </Text>
-              </View>
-            ))}
+                  <View
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
+                      marginRight: 4,
+                      backgroundColor: dotColor,
+                    }}
+                  />
+                  <Text
+                    className="text-xs"
+                    style={{ color: colors.textPrimary, maxWidth: 80 }}
+                    numberOfLines={1}
+                  >
+                    {isStart ? "Konum" : point.title}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         </View>
       )}
@@ -269,3 +301,13 @@ export default function MapScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+});

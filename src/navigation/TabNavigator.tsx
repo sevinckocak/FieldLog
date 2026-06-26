@@ -2,23 +2,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import MapScreen from "../features/map/screens/MapScreen";
 import TaskListScreen from "../features/tasks/screens/TaskListScreen";
+import { useTheme } from "../hooks/useTheme";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+  const { colors } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#3B82F6",
-        tabBarInactiveTintColor: "#6B7280",
+        tabBarActiveTintColor: colors.tabActive,
+        tabBarInactiveTintColor: colors.tabInactive,
         tabBarStyle: {
-          backgroundColor: "#111827",
+          backgroundColor: colors.tabBar,
           borderTopWidth: 0,
         },
         headerStyle: {
-          backgroundColor: "#111827",
+          backgroundColor: colors.header,
         },
-        headerTintColor: "#F9FAFB",
+        headerTintColor: colors.headerText,
       }}
     >
       <Tab.Screen
