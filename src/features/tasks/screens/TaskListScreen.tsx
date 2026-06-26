@@ -8,11 +8,11 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import { Task, TaskStatus } from "../../../types";
 import { useTask } from "../../../hooks/useTask";
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { buildRoute, selectRouteLoading } from "../../../store/slices/routeSlice";
-import { useAppSelector } from "../../../store/hooks";
 import useLocation from "../../../hooks/useLocation";
 import TaskCard from "../components/TaskCard";
 
@@ -21,6 +21,7 @@ const CARD_HEIGHT = 120;
 function TaskListScreen() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { t } = useTranslation('tasks');
   const { tasks, loading, error, changeStatus, removeTask } = useTask();
   const { location } = useLocation();
   const routeLoading = useAppSelector(selectRouteLoading);
@@ -63,9 +64,7 @@ function TaskListScreen() {
   );
 
   const handleChangeStatus = useCallback(
-    (id: number, status: TaskStatus) => {
-      changeStatus(id, status);
-    },
+    (id: number, status: TaskStatus) => changeStatus(id, status),
     [changeStatus]
   );
 
@@ -123,9 +122,11 @@ function TaskListScreen() {
         }
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center">
-            <Text className="text-gray-500 dark:text-gray-400 text-base">Henüz görev yok</Text>
+            <Text className="text-gray-500 dark:text-gray-400 text-base">
+              {t('emptyTitle')}
+            </Text>
             <Text className="text-gray-400 dark:text-gray-500 text-sm mt-1">
-              Haritada uzun bas ve görev ekle
+              {t('emptySubtitle')}
             </Text>
           </View>
         }
@@ -135,13 +136,15 @@ function TaskListScreen() {
       {hasSelection && (
         <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 shadow-lg">
           <Text className="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">
-            {selectedIds.length} görev seçildi
+            {t('routePanel.selectedCount', { count: selectedIds.length })}
           </Text>
 
           {routeLoading ? (
             <View className="items-center py-2">
               <ActivityIndicator size="small" color="#3b82f6" />
-              <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">Rota hesaplanıyor...</Text>
+              <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                {t('routePanel.calculating')}
+              </Text>
             </View>
           ) : (
             <View className="flex-row gap-2">
@@ -150,8 +153,12 @@ function TaskListScreen() {
                 onPress={() => handleRoute(false)}
                 disabled={!location}
               >
-                <Text className="text-white font-semibold text-sm">Sıraya Göre</Text>
-                <Text className="text-blue-100 text-xs mt-0.5">Seçtiğin sıra</Text>
+                <Text className="text-white font-semibold text-sm">
+                  {t('routePanel.byOrder')}
+                </Text>
+                <Text className="text-blue-100 text-xs mt-0.5">
+                  {t('routePanel.byOrderHint')}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -159,15 +166,19 @@ function TaskListScreen() {
                 onPress={() => handleRoute(true)}
                 disabled={!location}
               >
-                <Text className="text-white font-semibold text-sm">Optimize Et</Text>
-                <Text className="text-emerald-100 text-xs mt-0.5">En yakından başla</Text>
+                <Text className="text-white font-semibold text-sm">
+                  {t('routePanel.optimize')}
+                </Text>
+                <Text className="text-emerald-100 text-xs mt-0.5">
+                  {t('routePanel.optimizeHint')}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
 
           {!location && (
             <Text className="text-xs text-red-400 text-center mt-1">
-              Konum alınamadı, lütfen bekleyin
+              {t('routePanel.locationError')}
             </Text>
           )}
 
@@ -175,7 +186,9 @@ function TaskListScreen() {
             className="mt-2 items-center"
             onPress={() => setSelectedIds([])}
           >
-            <Text className="text-xs text-gray-400 dark:text-gray-500">Seçimi Temizle</Text>
+            <Text className="text-xs text-gray-400 dark:text-gray-500">
+              {t('routePanel.clearSelection')}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

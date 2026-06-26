@@ -1,0 +1,25 @@
+{
+  "defaultUser": "Benutzer",
+  "sections": {
+    "appearance": "Aussehen",
+    "preferences": "Einstellungen",
+    "about": "Über die App",
+    "account": "Konto"
+  },
+  "rows": {
+    "theme": "Design",
+    "language": "Sprache",
+    "notifications": "Benachrichtigungen",
+    "version": "App-Version",
+    "privacy": "Datenschutz",
+    "logout": "Abmelden"
+  },
+  "languagePicker": {
+    "title": "Sprache wählen"
+  },
+  "logout": {
+    "title": "Abmelden",
+    "message": "Möchtest du dich wirklich abmelden?",
+    "confirm": "Abmelden"
+  }
+}

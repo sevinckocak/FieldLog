@@ -1,0 +1,20 @@
+{
+  "emptyTitle": "Aucune tâche pour l'instant",
+  "emptySubtitle": "Appuyez longuement sur la carte pour ajouter une tâche",
+  "status": {
+    "draft": "Brouillon",
+    "active": "Actif",
+    "synced": "Synchronisé"
+  },
+  "deleteButton": "Supprimer",
+  "routePanel": {
+    "selectedCount": "{{count}} tâche(s) sélectionnée(s)",
+    "calculating": "Calcul de l'itinéraire...",
+    "byOrder": "Dans l'ordre",
+    "byOrderHint": "Ordre sélectionné",
+    "optimize": "Optimiser",
+    "optimizeHint": "Chemin le plus court",
+    "locationError": "Position non disponible",
+    "clearSelection": "Effacer la sélection"
+  }
+}

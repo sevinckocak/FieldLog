@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import taskReducer from "./slices/taskSlice";
 import routeReducer from "./slices/routeSlice";
 import themeReducer from "./slices/themeSlice";
+import languageReducer from "./slices/languageSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     tasks: taskReducer,
     route: routeReducer,
     theme: themeReducer,
+    language: languageReducer,
   },
 });
 

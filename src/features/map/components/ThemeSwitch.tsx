@@ -1,21 +1,23 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../hooks/useTheme';
 import { useAppDispatch } from '../../../store/hooks';
 import { setTheme } from '../../../store/slices/themeSlice';
 import type { ThemeMode } from '../../../theme';
 
-const MODES: { label: string; value: ThemeMode }[] = [
-  { label: 'Açık', value: 'light' },
-  { label: 'Koyu', value: 'dark' },
-];
-
 export default function ThemeSwitch() {
   const dispatch = useAppDispatch();
   const { colors, mode } = useTheme();
+  const { t } = useTranslation('common');
+
+  const modes: { label: string; value: ThemeMode }[] = [
+    { label: t('themeMode.light'), value: 'light' },
+    { label: t('themeMode.dark'), value: 'dark' },
+  ];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.switchBg }]}>
-      {MODES.map((item) => {
+      {modes.map((item) => {
         const isActive = mode === item.value;
         return (
           <TouchableOpacity

@@ -1,0 +1,16 @@
+{
+  "loading": "Yükleniyor...",
+  "appName": "FieldLog",
+  "cancel": "İptal",
+  "save": "Kaydet",
+  "delete": "Sil",
+  "tabs": {
+    "map": "Harita",
+    "tasks": "Görevler",
+    "profile": "Profil"
+  },
+  "themeMode": {
+    "light": "Açık",
+    "dark": "Koyu"
+  }
+}

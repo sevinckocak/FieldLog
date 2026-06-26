@@ -1,0 +1,19 @@
+{
+  "mapTypeButton": "Karte",
+  "locationLoading": "Standort wird ermittelt...",
+  "route": {
+    "optimized": "Optimierte Route",
+    "selectedOrder": "Route in Reihenfolge",
+    "cancel": "Route abbrechen",
+    "startPoint": "Start",
+    "currentLocation": "Ihr aktueller Standort",
+    "startLabel": "Standort",
+    "lastStop": "Letzter Halt • {{title}}",
+    "stop": "Halt {{index}} • {{title}}"
+  },
+  "addTask": {
+    "title": "Aufgabe hinzufügen",
+    "titlePlaceholder": "Titel",
+    "descriptionPlaceholder": "Beschreibung"
+  }
+}

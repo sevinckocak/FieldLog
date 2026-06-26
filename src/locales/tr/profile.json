@@ -1,0 +1,25 @@
+{
+  "defaultUser": "Kullanıcı",
+  "sections": {
+    "appearance": "Görünüm",
+    "preferences": "Tercihler",
+    "about": "Hakkında",
+    "account": "Hesap"
+  },
+  "rows": {
+    "theme": "Tema",
+    "language": "Dil",
+    "notifications": "Bildirimler",
+    "version": "Uygulama Versiyonu",
+    "privacy": "Gizlilik Politikası",
+    "logout": "Çıkış Yap"
+  },
+  "languagePicker": {
+    "title": "Dil Seç"
+  },
+  "logout": {
+    "title": "Çıkış Yap",
+    "message": "Hesabından çıkmak istediğinden emin misin?",
+    "confirm": "Çıkış Yap"
+  }
+}

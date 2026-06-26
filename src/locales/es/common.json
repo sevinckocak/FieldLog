@@ -1,0 +1,16 @@
+{
+  "loading": "Cargando...",
+  "appName": "FieldLog",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "delete": "Eliminar",
+  "tabs": {
+    "map": "Mapa",
+    "tasks": "Tareas",
+    "profile": "Perfil"
+  },
+  "themeMode": {
+    "light": "Claro",
+    "dark": "Oscuro"
+  }
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Task, TaskStatus } from "../../../types";
 
 interface TaskCardProps {
@@ -16,12 +17,6 @@ const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
   synced: "draft",
 };
 
-const STATUS_LABEL: Record<TaskStatus, string> = {
-  draft: "Taslak",
-  active: "Aktif",
-  synced: "Senkronize",
-};
-
 // NativeWind tam sınıf string'lerini statik görmeli — parçalara bölme
 const STATUS_STYLES: Record<TaskStatus, { badge: string; text: string }> = {
   draft:  { badge: "bg-gray-100 dark:bg-gray-800",  text: "text-gray-600 dark:text-gray-400" },
@@ -30,6 +25,14 @@ const STATUS_STYLES: Record<TaskStatus, { badge: string; text: string }> = {
 };
 
 function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCardProps) {
+  const { t } = useTranslation('tasks');
+
+  const STATUS_LABEL: Record<TaskStatus, string> = {
+    draft: t('status.draft'),
+    active: t('status.active'),
+    synced: t('status.synced'),
+  };
+
   const handleCycleStatus = () => {
     onChangeStatus(task.id, STATUS_CYCLE[task.status]);
   };
@@ -92,7 +95,7 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
           </View>
 
           <TouchableOpacity onPress={() => onRemove(task.id)} className="mt-3 self-end">
-            <Text className="text-xs text-red-400 dark:text-red-400">Sil</Text>
+            <Text className="text-xs text-red-400">{t('deleteButton')}</Text>
           </TouchableOpacity>
         </View>
       </View>

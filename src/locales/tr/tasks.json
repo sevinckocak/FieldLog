@@ -1,0 +1,20 @@
+{
+  "emptyTitle": "Henüz görev yok",
+  "emptySubtitle": "Haritada uzun bas ve görev ekle",
+  "deleteButton": "Sil",
+  "status": {
+    "draft": "Taslak",
+    "active": "Aktif",
+    "synced": "Senkronize"
+  },
+  "routePanel": {
+    "selectedCount": "{{count}} görev seçildi",
+    "calculating": "Rota hesaplanıyor...",
+    "byOrder": "Sıraya Göre",
+    "byOrderHint": "Seçtiğin sıra",
+    "optimize": "Optimize Et",
+    "optimizeHint": "En yakından başla",
+    "locationError": "Konum alınamadı, lütfen bekleyin",
+    "clearSelection": "Seçimi Temizle"
+  }
+}

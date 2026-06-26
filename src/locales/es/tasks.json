@@ -1,0 +1,20 @@
+{
+  "emptyTitle": "Aún no hay tareas",
+  "emptySubtitle": "Mantén presionado el mapa para agregar una tarea",
+  "status": {
+    "draft": "Borrador",
+    "active": "Activo",
+    "synced": "Sincronizado"
+  },
+  "deleteButton": "Eliminar",
+  "routePanel": {
+    "selectedCount": "{{count}} tarea(s) seleccionada(s)",
+    "calculating": "Calculando ruta...",
+    "byOrder": "En orden",
+    "byOrderHint": "Orden seleccionado",
+    "optimize": "Optimizar",
+    "optimizeHint": "Ruta más corta",
+    "locationError": "Ubicación no disponible",
+    "clearSelection": "Limpiar selección"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "loading": "Loading...",
+  "appName": "FieldLog",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "tabs": {
+    "map": "Map",
+    "tasks": "Tasks",
+    "profile": "Profile"
+  },
+  "themeMode": {
+    "light": "Light",
+    "dark": "Dark"
+  }
+}

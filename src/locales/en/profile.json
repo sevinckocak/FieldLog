@@ -1,0 +1,25 @@
+{
+  "defaultUser": "User",
+  "sections": {
+    "appearance": "Appearance",
+    "preferences": "Preferences",
+    "about": "About",
+    "account": "Account"
+  },
+  "rows": {
+    "theme": "Theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "version": "App Version",
+    "privacy": "Privacy Policy",
+    "logout": "Sign Out"
+  },
+  "languagePicker": {
+    "title": "Select Language"
+  },
+  "logout": {
+    "title": "Sign Out",
+    "message": "Are you sure you want to sign out?",
+    "confirm": "Sign Out"
+  }
+}

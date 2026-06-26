@@ -1,0 +1,20 @@
+{
+  "emptyTitle": "Noch keine Aufgaben",
+  "emptySubtitle": "Karte gedrückt halten, um Aufgabe hinzuzufügen",
+  "status": {
+    "draft": "Entwurf",
+    "active": "Aktiv",
+    "synced": "Synchronisiert"
+  },
+  "deleteButton": "Löschen",
+  "routePanel": {
+    "selectedCount": "{{count}} Aufgabe(n) ausgewählt",
+    "calculating": "Route wird berechnet...",
+    "byOrder": "In Reihenfolge",
+    "byOrderHint": "Gewählte Reihenfolge",
+    "optimize": "Optimieren",
+    "optimizeHint": "Kürzeste Route",
+    "locationError": "Standort nicht verfügbar",
+    "clearSelection": "Auswahl aufheben"
+  }
+}

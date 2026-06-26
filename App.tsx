@@ -1,4 +1,8 @@
+// i18n ilk satırda import edilmeli — her şeyden önce initialize olsun
+import './src/i18n';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getLocales } from 'expo-localization';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -6,12 +10,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import './global.css';
 import { auth } from './src/config/firebase/firebaseConfig';
+import i18n, { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from './src/i18n';
 import { useAppInit } from './src/hooks/useAppInit';
 import RootNavigator from './src/navigation/RootNavigator';
 import OnboardingScreen from './src/screens/onboarding/OnboardingScreen';
 import { useColorScheme } from 'nativewind';
 import { useAppDispatch, useAppSelector } from './src/store/hooks';
 import { setUser } from './src/store/slices/authSlice';
+import { setLocale, selectLocale } from './src/store/slices/languageSlice';
 import { selectThemeMode, setTheme } from './src/store/slices/themeSlice';
 import { store } from './src/store';
 import type { ThemeMode } from './src/theme';
@@ -44,16 +50,16 @@ function AppContent() {
   const dispatch = useAppDispatch();
   const { ready, error } = useAppInit();
   const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+
+  // ── Theme ──────────────────────────────────────────
   const themeMode = useAppSelector(selectThemeMode);
   const [themeHydrated, setThemeHydrated] = useState(false);
-
-  // NativeWind engine'i Redux state ile senkronize eder
   const { setColorScheme } = useColorScheme();
+
   useEffect(() => {
     setColorScheme(themeMode);
   }, [themeMode, setColorScheme]);
 
-  // Load persisted theme on mount
   useEffect(() => {
     AsyncStorage.getItem('app_theme').then((value) => {
       if (value === 'light' || value === 'dark') {
@@ -63,12 +69,43 @@ function AppContent() {
     });
   }, [dispatch]);
 
-  // Persist theme changes after initial hydration
   useEffect(() => {
     if (!themeHydrated) return;
     AsyncStorage.setItem('app_theme', themeMode);
   }, [themeMode, themeHydrated]);
 
+  // ── Language ────────────────────────────────────────
+  const locale = useAppSelector(selectLocale);
+  const [localeHydrated, setLocaleHydrated] = useState(false);
+
+  useEffect(() => {
+    const loadLocale = async () => {
+      const saved = await AsyncStorage.getItem('app_locale');
+      if (saved && SUPPORTED_LOCALES.includes(saved as Locale)) {
+        const validLocale = saved as Locale;
+        dispatch(setLocale(validLocale));
+        await i18n.changeLanguage(validLocale);
+      } else {
+        // Sistem dilini algıla, desteklenen bir locale varsa kullan
+        const systemLang = getLocales()[0]?.languageCode ?? '';
+        const detected = SUPPORTED_LOCALES.includes(systemLang as Locale)
+          ? (systemLang as Locale)
+          : DEFAULT_LOCALE;
+        dispatch(setLocale(detected));
+        await i18n.changeLanguage(detected);
+      }
+      setLocaleHydrated(true);
+    };
+    loadLocale();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!localeHydrated) return;
+    AsyncStorage.setItem('app_locale', locale);
+    i18n.changeLanguage(locale);
+  }, [locale, localeHydrated]);
+
+  // ── Onboarding ──────────────────────────────────────
   useEffect(() => {
     AsyncStorage.getItem('onboardingCompleted').then((value) => {
       setOnboardingDone(value === 'true');
@@ -83,7 +120,7 @@ function AppContent() {
     );
   }
 
-  if (!ready || onboardingDone === null || !themeHydrated) {
+  if (!ready || onboardingDone === null || !themeHydrated || !localeHydrated) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-950">
         <Text className="text-gray-400">Yükleniyor...</Text>

@@ -1,0 +1,19 @@
+{
+  "mapTypeButton": "Carte",
+  "locationLoading": "Localisation en cours...",
+  "route": {
+    "optimized": "Itinéraire optimisé",
+    "selectedOrder": "Itinéraire dans l'ordre",
+    "cancel": "Annuler l'itinéraire",
+    "startPoint": "Départ",
+    "currentLocation": "Votre position actuelle",
+    "startLabel": "Position",
+    "lastStop": "Dernier arrêt • {{title}}",
+    "stop": "Arrêt {{index}} • {{title}}"
+  },
+  "addTask": {
+    "title": "Ajouter une tâche",
+    "titlePlaceholder": "Titre",
+    "descriptionPlaceholder": "Description"
+  }
+}

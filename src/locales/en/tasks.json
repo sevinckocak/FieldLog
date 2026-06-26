@@ -1,0 +1,20 @@
+{
+  "emptyTitle": "No tasks yet",
+  "emptySubtitle": "Long press on the map to add a task",
+  "deleteButton": "Delete",
+  "status": {
+    "draft": "Draft",
+    "active": "Active",
+    "synced": "Synced"
+  },
+  "routePanel": {
+    "selectedCount": "{{count}} task(s) selected",
+    "calculating": "Calculating route...",
+    "byOrder": "By Order",
+    "byOrderHint": "Your selected order",
+    "optimize": "Optimize",
+    "optimizeHint": "Start from nearest",
+    "locationError": "Location unavailable, please wait",
+    "clearSelection": "Clear Selection"
+  }
+}

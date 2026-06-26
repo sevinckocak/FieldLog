@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearAuthError, loginAsync, selectAuthError, selectAuthLoading } from '../../store/slices/authSlice';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
@@ -25,26 +26,31 @@ export default function LoginScreen() {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthLoading);
   const reduxError = useAppSelector(selectAuthError);
+  const { t } = useTranslation('auth');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [localError, setLocalError] = useState('');
+  const [localErrorKey, setLocalErrorKey] = useState('');
 
-  const error = localError || reduxError;
+  const errorText = localErrorKey
+    ? t(localErrorKey as any)
+    : reduxError
+      ? t(`errors.${reduxError}` as any)
+      : null;
 
   const handleLogin = async () => {
     if (!email.trim() || !password) {
-      setLocalError('Lütfen tüm alanları doldurun.');
+      setLocalErrorKey('validation.fillAllFields');
       return;
     }
-    setLocalError('');
+    setLocalErrorKey('');
     dispatch(clearAuthError());
     dispatch(loginAsync({ email: email.trim(), password }));
   };
 
   const clearErrors = () => {
-    setLocalError('');
+    setLocalErrorKey('');
     dispatch(clearAuthError());
   };
 
@@ -85,7 +91,7 @@ export default function LoginScreen() {
                 FieldLog
               </Text>
               <Text style={{ color: '#6B7280', fontSize: 15, marginTop: 8, textAlign: 'center' }}>
-                Hesabına giriş yap
+                {t('login.subtitle')}
               </Text>
             </View>
 
@@ -95,7 +101,7 @@ export default function LoginScreen() {
               {/* E-posta */}
               <View>
                 <Text style={{ color: '#9CA3AF', fontSize: 13, fontWeight: '500', marginBottom: 8 }}>
-                  E-posta
+                  {t('login.emailLabel')}
                 </Text>
                 <View
                   style={{
@@ -111,8 +117,8 @@ export default function LoginScreen() {
                   <Ionicons name="mail-outline" size={18} color="#4B5563" />
                   <TextInput
                     value={email}
-                    onChangeText={(t) => { setEmail(t); clearErrors(); }}
-                    placeholder="ornek@email.com"
+                    onChangeText={(v) => { setEmail(v); clearErrors(); }}
+                    placeholder={t('login.emailPlaceholder')}
                     placeholderTextColor="#374151"
                     keyboardType="email-address"
                     autoCapitalize="none"
@@ -125,7 +131,7 @@ export default function LoginScreen() {
               {/* Şifre */}
               <View>
                 <Text style={{ color: '#9CA3AF', fontSize: 13, fontWeight: '500', marginBottom: 8 }}>
-                  Şifre
+                  {t('login.passwordLabel')}
                 </Text>
                 <View
                   style={{
@@ -141,8 +147,8 @@ export default function LoginScreen() {
                   <Ionicons name="lock-closed-outline" size={18} color="#4B5563" />
                   <TextInput
                     value={password}
-                    onChangeText={(t) => { setPassword(t); clearErrors(); }}
-                    placeholder="••••••••"
+                    onChangeText={(v) => { setPassword(v); clearErrors(); }}
+                    placeholder={t('login.passwordPlaceholder')}
                     placeholderTextColor="#374151"
                     secureTextEntry={!showPassword}
                     style={{ flex: 1, color: '#F9FAFB', fontSize: 15, paddingVertical: 14, paddingLeft: 10 }}
@@ -161,7 +167,7 @@ export default function LoginScreen() {
               </View>
 
               {/* Hata Mesajı */}
-              {error ? (
+              {errorText ? (
                 <View
                   style={{
                     backgroundColor: '#1A0505',
@@ -175,7 +181,7 @@ export default function LoginScreen() {
                   }}
                 >
                   <Ionicons name="alert-circle-outline" size={16} color="#F87171" />
-                  <Text style={{ color: '#FCA5A5', fontSize: 13, flex: 1 }}>{error}</Text>
+                  <Text style={{ color: '#FCA5A5', fontSize: 13, flex: 1 }}>{errorText}</Text>
                 </View>
               ) : null}
 
@@ -202,7 +208,7 @@ export default function LoginScreen() {
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
-                    Giriş Yap
+                    {t('login.submitButton')}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -211,12 +217,12 @@ export default function LoginScreen() {
             {/* Kayıt Ol Linki */}
             <View style={{ alignItems: 'center', marginTop: 32 }}>
               <Text style={{ color: '#6B7280', fontSize: 15 }}>
-                Hesabın yok mu?{' '}
+                {t('login.noAccount')}{' '}
                 <Text
                   style={{ color: '#60A5FA', fontWeight: '600' }}
                   onPress={() => { clearErrors(); navigation.navigate('SignUp'); }}
                 >
-                  Kayıt Ol
+                  {t('login.signUpLink')}
                 </Text>
               </Text>
             </View>

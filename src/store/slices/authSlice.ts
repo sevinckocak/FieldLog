@@ -29,16 +29,18 @@ const initialState: AuthState = {
   error: null,
 };
 
-const FIREBASE_ERRORS: Record<string, string> = {
-  'auth/invalid-credential': 'E-posta veya şifre hatalı.',
-  'auth/user-not-found': 'Bu e-posta ile kayıtlı kullanıcı bulunamadı.',
-  'auth/wrong-password': 'Hatalı şifre.',
-  'auth/invalid-email': 'Geçersiz e-posta adresi.',
-  'auth/email-already-in-use': 'Bu e-posta adresi zaten kullanımda.',
-  'auth/weak-password': 'Şifre en az 6 karakter olmalı.',
-  'auth/too-many-requests': 'Çok fazla deneme yapıldı. Lütfen bekleyin.',
-  'auth/network-request-failed': 'Ağ hatası. İnternet bağlantınızı kontrol edin.',
-  'auth/user-disabled': 'Bu hesap devre dışı bırakılmış.',
+// Firebase hata kodlarını i18n key'lerine dönüştürür.
+// auth.json errors.* altındaki key'lerle eşleşir.
+const FIREBASE_ERROR_KEYS: Record<string, string> = {
+  'auth/invalid-credential': 'invalidCredential',
+  'auth/user-not-found': 'userNotFound',
+  'auth/wrong-password': 'wrongPassword',
+  'auth/invalid-email': 'invalidEmail',
+  'auth/email-already-in-use': 'emailAlreadyInUse',
+  'auth/weak-password': 'weakPassword',
+  'auth/too-many-requests': 'tooManyRequests',
+  'auth/network-request-failed': 'networkRequestFailed',
+  'auth/user-disabled': 'userDisabled',
 };
 
 export const loginAsync = createAsyncThunk<
@@ -50,7 +52,7 @@ export const loginAsync = createAsyncThunk<
     await signInWithEmailAndPassword(auth, email, password);
     // onAuthStateChanged listener → setUser → RootNavigator geçiş yapar
   } catch (e: any) {
-    return rejectWithValue(FIREBASE_ERRORS[e.code] ?? 'Bir hata oluştu. Lütfen tekrar deneyin.');
+    return rejectWithValue(FIREBASE_ERROR_KEYS[e.code] ?? 'default');
   }
 });
 
@@ -70,7 +72,7 @@ export const signUpAsync = createAsyncThunk<
       photoURL: user.photoURL,
     };
   } catch (e: any) {
-    return rejectWithValue(FIREBASE_ERRORS[e.code] ?? 'Bir hata oluştu. Lütfen tekrar deneyin.');
+    return rejectWithValue(FIREBASE_ERROR_KEYS[e.code] ?? 'default');
   }
 });
 
@@ -102,7 +104,7 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload ?? 'Giriş yapılamadı.';
+        state.error = action.payload ?? 'default';
       })
 
       // signUp
@@ -117,7 +119,7 @@ const authSlice = createSlice({
       })
       .addCase(signUpAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload ?? 'Kayıt olunamadı.';
+        state.error = action.payload ?? 'default';
       })
 
       // logout

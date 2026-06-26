@@ -1,0 +1,25 @@
+{
+  "defaultUser": "Usuario",
+  "sections": {
+    "appearance": "Apariencia",
+    "preferences": "Preferencias",
+    "about": "Acerca de",
+    "account": "Cuenta"
+  },
+  "rows": {
+    "theme": "Tema",
+    "language": "Idioma",
+    "notifications": "Notificaciones",
+    "version": "Versión de la app",
+    "privacy": "Política de privacidad",
+    "logout": "Cerrar sesión"
+  },
+  "languagePicker": {
+    "title": "Seleccionar idioma"
+  },
+  "logout": {
+    "title": "Cerrar sesión",
+    "message": "¿Estás seguro de que quieres cerrar sesión?",
+    "confirm": "Cerrar sesión"
+  }
+}

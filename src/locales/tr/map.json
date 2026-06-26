@@ -1,0 +1,19 @@
+{
+  "mapTypeButton": "Harita",
+  "locationLoading": "Konum alınıyor...",
+  "route": {
+    "optimized": "Optimize Edilmiş Rota",
+    "selectedOrder": "Seçili Sıra Rotası",
+    "cancel": "Rotayı İptal Et",
+    "startPoint": "Başlangıç",
+    "currentLocation": "Mevcut konumunuz",
+    "startLabel": "Konum",
+    "lastStop": "Son Durak • {{title}}",
+    "stop": "{{index}}. Durak • {{title}}"
+  },
+  "addTask": {
+    "title": "Görev Ekle",
+    "titlePlaceholder": "Başlık",
+    "descriptionPlaceholder": "Açıklama"
+  }
+}

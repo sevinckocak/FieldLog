@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearAuthError, signUpAsync, selectAuthError, selectAuthLoading } from '../../store/slices/authSlice';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
@@ -87,6 +88,7 @@ export default function SignUpScreen() {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthLoading);
   const reduxError = useAppSelector(selectAuthError);
+  const { t } = useTranslation('auth');
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -94,29 +96,33 @@ export default function SignUpScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [localError, setLocalError] = useState('');
+  const [localErrorKey, setLocalErrorKey] = useState('');
 
-  const error = localError || reduxError;
+  const errorText = localErrorKey
+    ? t(localErrorKey as any)
+    : reduxError
+      ? t(`errors.${reduxError}` as any)
+      : null;
 
   const clearErrors = () => {
-    setLocalError('');
+    setLocalErrorKey('');
     dispatch(clearAuthError());
   };
 
   const handleSignUp = () => {
     if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
-      setLocalError('Lütfen tüm alanları doldurun.');
+      setLocalErrorKey('validation.fillAllFields');
       return;
     }
     if (password !== confirmPassword) {
-      setLocalError('Şifreler eşleşmiyor.');
+      setLocalErrorKey('validation.passwordsDoNotMatch');
       return;
     }
     if (password.length < 6) {
-      setLocalError('Şifre en az 6 karakter olmalı.');
+      setLocalErrorKey('validation.passwordTooShort');
       return;
     }
-    setLocalError('');
+    setLocalErrorKey('');
     dispatch(clearAuthError());
     dispatch(signUpAsync({ fullName: fullName.trim(), email: email.trim(), password }));
   };
@@ -164,10 +170,10 @@ export default function SignUpScreen() {
                   <Ionicons name="map" size={34} color="#FFFFFF" />
                 </View>
                 <Text style={{ color: '#F9FAFB', fontSize: 28, fontWeight: '700' }}>
-                  Hesap Oluştur
+                  {t('signup.title')}
                 </Text>
                 <Text style={{ color: '#6B7280', fontSize: 15, marginTop: 8, textAlign: 'center' }}>
-                  FieldLog'a ücretsiz kaydol
+                  {t('signup.subtitle')}
                 </Text>
               </View>
             </View>
@@ -175,44 +181,44 @@ export default function SignUpScreen() {
             {/* Form */}
             <View style={{ gap: 16 }}>
               <InputField
-                label="Ad Soyad"
+                label={t('signup.fullNameLabel')}
                 icon="person-outline"
                 value={fullName}
-                onChangeText={(t) => { setFullName(t); clearErrors(); }}
-                placeholder="Adınız Soyadınız"
+                onChangeText={(v) => { setFullName(v); clearErrors(); }}
+                placeholder={t('signup.fullNamePlaceholder')}
                 autoCapitalize="words"
               />
               <InputField
-                label="E-posta"
+                label={t('signup.emailLabel')}
                 icon="mail-outline"
                 value={email}
-                onChangeText={(t) => { setEmail(t); clearErrors(); }}
-                placeholder="ornek@email.com"
+                onChangeText={(v) => { setEmail(v); clearErrors(); }}
+                placeholder={t('signup.emailPlaceholder')}
                 keyboardType="email-address"
               />
               <InputField
-                label="Şifre"
+                label={t('signup.passwordLabel')}
                 icon="lock-closed-outline"
                 value={password}
-                onChangeText={(t) => { setPassword(t); clearErrors(); }}
-                placeholder="En az 6 karakter"
+                onChangeText={(v) => { setPassword(v); clearErrors(); }}
+                placeholder={t('signup.passwordPlaceholder')}
                 secure={!showPassword}
                 showToggle
                 onToggle={() => setShowPassword((v) => !v)}
               />
               <InputField
-                label="Şifre Tekrar"
+                label={t('signup.confirmPasswordLabel')}
                 icon="shield-checkmark-outline"
                 value={confirmPassword}
-                onChangeText={(t) => { setConfirmPassword(t); clearErrors(); }}
-                placeholder="Şifreyi tekrar girin"
+                onChangeText={(v) => { setConfirmPassword(v); clearErrors(); }}
+                placeholder={t('signup.confirmPasswordPlaceholder')}
                 secure={!showConfirm}
                 showToggle
                 onToggle={() => setShowConfirm((v) => !v)}
               />
 
               {/* Hata Mesajı */}
-              {error ? (
+              {errorText ? (
                 <View
                   style={{
                     backgroundColor: '#1A0505',
@@ -226,7 +232,7 @@ export default function SignUpScreen() {
                   }}
                 >
                   <Ionicons name="alert-circle-outline" size={16} color="#F87171" />
-                  <Text style={{ color: '#FCA5A5', fontSize: 13, flex: 1 }}>{error}</Text>
+                  <Text style={{ color: '#FCA5A5', fontSize: 13, flex: 1 }}>{errorText}</Text>
                 </View>
               ) : null}
 
@@ -253,7 +259,7 @@ export default function SignUpScreen() {
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
-                    Kayıt Ol
+                    {t('signup.submitButton')}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -262,12 +268,12 @@ export default function SignUpScreen() {
             {/* Giriş Yap Linki */}
             <View style={{ alignItems: 'center', marginTop: 32 }}>
               <Text style={{ color: '#6B7280', fontSize: 15 }}>
-                Zaten hesabın var mı?{' '}
+                {t('signup.hasAccount')}{' '}
                 <Text
                   style={{ color: '#60A5FA', fontWeight: '600' }}
                   onPress={() => { clearErrors(); navigation.navigate('Login'); }}
                 >
-                  Giriş Yap
+                  {t('signup.loginLink')}
                 </Text>
               </Text>
             </View>

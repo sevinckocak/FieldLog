@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { ActivityIndicator, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useTranslation } from "react-i18next";
 import { Task } from "../../../types";
 
 interface Props {
@@ -11,6 +19,9 @@ interface Props {
 }
 
 export default function AddTaskModal({ visible, lat, lng, onClose, onSave }: Props) {
+  const { t: tMap } = useTranslation('map');
+  const { t: tCommon } = useTranslation('common');
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [saving, setSaving] = useState(false);
@@ -33,21 +44,21 @@ export default function AddTaskModal({ visible, lat, lng, onClose, onSave }: Pro
       <View className="flex-1 justify-end">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6">
           <Text className="text-gray-900 dark:text-white text-xl font-bold mb-4">
-            Görev Ekle
+            {tMap('addTask.title')}
           </Text>
           <Text className="text-gray-500 dark:text-gray-400 text-sm mb-4">
             📍 {lat.toFixed(5)}, {lng.toFixed(5)}
           </Text>
           <TextInput
             className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl p-4 mb-3"
-            placeholder="Başlık"
+            placeholder={tMap('addTask.titlePlaceholder')}
             placeholderTextColor="#6B7280"
             value={title}
             onChangeText={setTitle}
           />
           <TextInput
             className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl p-4 mb-6"
-            placeholder="Açıklama"
+            placeholder={tMap('addTask.descriptionPlaceholder')}
             placeholderTextColor="#6B7280"
             value={description}
             onChangeText={setDescription}
@@ -63,12 +74,16 @@ export default function AddTaskModal({ visible, lat, lng, onClose, onSave }: Pro
             {saving ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text className="text-white font-bold text-base">Kaydet</Text>
+              <Text className="text-white font-bold text-base">
+                {tCommon('save')}
+              </Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity className="items-center p-3" onPress={onClose}>
-            <Text className="text-gray-500 dark:text-gray-400">İptal</Text>
+            <Text className="text-gray-500 dark:text-gray-400">
+              {tCommon('cancel')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

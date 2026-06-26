@@ -1,0 +1,25 @@
+{
+  "defaultUser": "Utilisateur",
+  "sections": {
+    "appearance": "Apparence",
+    "preferences": "Préférences",
+    "about": "À propos",
+    "account": "Compte"
+  },
+  "rows": {
+    "theme": "Thème",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "version": "Version de l'app",
+    "privacy": "Politique de confidentialité",
+    "logout": "Se déconnecter"
+  },
+  "languagePicker": {
+    "title": "Choisir la langue"
+  },
+  "logout": {
+    "title": "Se déconnecter",
+    "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "confirm": "Se déconnecter"
+  }
+}

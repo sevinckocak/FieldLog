@@ -1,0 +1,19 @@
+{
+  "mapTypeButton": "Mapa",
+  "locationLoading": "Obteniendo ubicación...",
+  "route": {
+    "optimized": "Ruta optimizada",
+    "selectedOrder": "Ruta en orden seleccionado",
+    "cancel": "Cancelar ruta",
+    "startPoint": "Inicio",
+    "currentLocation": "Tu ubicación actual",
+    "startLabel": "Ubicación",
+    "lastStop": "Última parada • {{title}}",
+    "stop": "Parada {{index}} • {{title}}"
+  },
+  "addTask": {
+    "title": "Agregar tarea",
+    "titlePlaceholder": "Título",
+    "descriptionPlaceholder": "Descripción"
+  }
+}

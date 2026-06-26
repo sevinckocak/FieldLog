@@ -6,6 +6,7 @@ import MapView, {
   Marker,
   Polyline,
 } from "react-native-maps";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../../../hooks/useTheme";
 import useLocation from "../../../hooks/useLocation";
 import { useTask } from "../../../hooks/useTask";
@@ -39,6 +40,7 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
+  const { t: tMap } = useTranslation('map');
   const { location, error: locationError } = useLocation();
   const { tasks, addTask } = useTask();
 
@@ -103,7 +105,7 @@ export default function MapScreen() {
   if (!location) {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text className="text-gray-500">Konum alınıyor...</Text>
+        <Text className="text-gray-500">{tMap('locationLoading')}</Text>
       </View>
     );
   }
@@ -155,14 +157,14 @@ export default function MapScreen() {
                 coordinate={{ latitude: point.lat, longitude: point.lng }}
                 title={
                   index === 0
-                    ? "Başlangıç"
+                    ? tMap('route.startPoint')
                     : index === routePoints.length - 1
-                    ? `Son Durak • ${point.title}`
-                    : `${index}. Durak • ${point.title}`
+                    ? tMap('route.lastStop', { title: point.title })
+                    : tMap('route.stop', { index, title: point.title })
                 }
                 description={
                   index === 0
-                    ? "Mevcut konumunuz"
+                    ? tMap('route.currentLocation')
                     : `${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}`
                 }
                 pinColor={routeMarkerColor(index, routePoints.length)}
@@ -185,7 +187,7 @@ export default function MapScreen() {
           onPress={() => setSelectorVisible((v) => !v)}
         >
           <Text className="font-medium text-sm" style={{ color: colors.textPrimary }}>
-            {MAP_TYPES.find((t) => t.value === mapType)?.label ?? "Harita"}
+            {MAP_TYPES.find((t) => t.value === mapType)?.label ?? tMap('mapTypeButton')}
           </Text>
         </TouchableOpacity>
 
@@ -231,7 +233,7 @@ export default function MapScreen() {
         >
           <View className="flex-row items-center justify-between mb-2">
             <Text className="text-sm font-semibold" style={{ color: colors.textPrimary }}>
-              {routeOptimized ? "Optimize Edilmiş Rota" : "Seçili Sıra Rotası"}
+              {routeOptimized ? tMap('route.optimized') : tMap('route.selectedOrder')}
             </Text>
             <TouchableOpacity
               onPress={() => dispatch(clearRoute())}
@@ -239,7 +241,7 @@ export default function MapScreen() {
               style={{ backgroundColor: colors.dangerLight }}
             >
               <Text className="text-xs font-medium" style={{ color: colors.dangerText }}>
-                Rotayı İptal Et
+                {tMap('route.cancel')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -279,7 +281,7 @@ export default function MapScreen() {
                     style={{ color: colors.textPrimary, maxWidth: 80 }}
                     numberOfLines={1}
                   >
-                    {isStart ? "Konum" : point.title}
+                    {isStart ? tMap('route.startLabel') : point.title}
                   </Text>
                 </View>
               );
