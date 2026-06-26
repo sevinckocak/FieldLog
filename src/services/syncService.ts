@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db as firestoreDb } from "../config/firebase/firebaseConfig";
 import { getPendingTasks, markAsSynced } from "../db/taskRepository";
-import { Task, TaskStatus } from "../types";
+import { Task, TaskPriority, TaskStatus } from "../types";
 
 export interface FirestoreTask {
   firestoreId: string;
@@ -18,6 +18,7 @@ export interface FirestoreTask {
   lat: number;
   lng: number;
   status: TaskStatus;
+  priority?: TaskPriority;
 }
 
 function userTasksCol(uid: string) {
@@ -43,6 +44,7 @@ export async function pushTaskToFirestore(
     lat: task.lat,
     lng: task.lng,
     status: task.status,
+    priority: task.priority ?? 'medium',
     updatedAt: serverTimestamp(),
   };
 
@@ -83,6 +85,7 @@ export async function fetchTasksFromFirestore(uid: string): Promise<FirestoreTas
       lat: data.lat ?? 0,
       lng: data.lng ?? 0,
       status: (data.status as TaskStatus) ?? "draft",
+      priority: (data.priority as TaskPriority) ?? "medium",
     };
   });
 }

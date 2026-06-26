@@ -15,18 +15,20 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { buildRoute, selectRouteLoading } from "../../../store/slices/routeSlice";
 import useLocation from "../../../hooks/useLocation";
 import TaskCard from "../components/TaskCard";
+import EditTaskModal from "../components/EditTaskModal";
 
 const CARD_HEIGHT = 120;
 
 function TaskListScreen() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { t } = useTranslation('tasks');
-  const { tasks, loading, error, changeStatus, removeTask } = useTask();
+  const { t } = useTranslation("tasks");
+  const { tasks, loading, error, editTask, changeStatus, removeTask } = useTask();
   const { location } = useLocation();
   const routeLoading = useAppSelector(selectRouteLoading);
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const toggleSelect = useCallback((id: number) => {
     setSelectedIds((prev) =>
@@ -76,17 +78,26 @@ function TaskListScreen() {
     [removeTask]
   );
 
+  const handleEdit = useCallback((task: Task) => {
+    setEditingTask(task);
+  }, []);
+
+  const handleEditClose = useCallback(() => {
+    setEditingTask(null);
+  }, []);
+
   const renderItem: ListRenderItem<Task> = useCallback(
     ({ item }) => (
       <TaskCard
         task={item}
         onChangeStatus={handleChangeStatus}
         onRemove={handleRemove}
+        onEdit={handleEdit}
         selected={selectedIds.includes(item.id)}
         onSelect={toggleSelect}
       />
     ),
-    [handleChangeStatus, handleRemove, selectedIds, toggleSelect]
+    [handleChangeStatus, handleRemove, handleEdit, selectedIds, toggleSelect]
   );
 
   if (loading) {
@@ -123,10 +134,10 @@ function TaskListScreen() {
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center">
             <Text className="text-gray-500 dark:text-gray-400 text-base">
-              {t('emptyTitle')}
+              {t("emptyTitle")}
             </Text>
             <Text className="text-gray-400 dark:text-gray-500 text-sm mt-1">
-              {t('emptySubtitle')}
+              {t("emptySubtitle")}
             </Text>
           </View>
         }
@@ -136,14 +147,14 @@ function TaskListScreen() {
       {hasSelection && (
         <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 shadow-lg">
           <Text className="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">
-            {t('routePanel.selectedCount', { count: selectedIds.length })}
+            {t("routePanel.selectedCount", { count: selectedIds.length })}
           </Text>
 
           {routeLoading ? (
             <View className="items-center py-2">
               <ActivityIndicator size="small" color="#3b82f6" />
               <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                {t('routePanel.calculating')}
+                {t("routePanel.calculating")}
               </Text>
             </View>
           ) : (
@@ -154,10 +165,10 @@ function TaskListScreen() {
                 disabled={!location}
               >
                 <Text className="text-white font-semibold text-sm">
-                  {t('routePanel.byOrder')}
+                  {t("routePanel.byOrder")}
                 </Text>
                 <Text className="text-blue-100 text-xs mt-0.5">
-                  {t('routePanel.byOrderHint')}
+                  {t("routePanel.byOrderHint")}
                 </Text>
               </TouchableOpacity>
 
@@ -167,10 +178,10 @@ function TaskListScreen() {
                 disabled={!location}
               >
                 <Text className="text-white font-semibold text-sm">
-                  {t('routePanel.optimize')}
+                  {t("routePanel.optimize")}
                 </Text>
                 <Text className="text-emerald-100 text-xs mt-0.5">
-                  {t('routePanel.optimizeHint')}
+                  {t("routePanel.optimizeHint")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -178,7 +189,7 @@ function TaskListScreen() {
 
           {!location && (
             <Text className="text-xs text-red-400 text-center mt-1">
-              {t('routePanel.locationError')}
+              {t("routePanel.locationError")}
             </Text>
           )}
 
@@ -187,11 +198,19 @@ function TaskListScreen() {
             onPress={() => setSelectedIds([])}
           >
             <Text className="text-xs text-gray-400 dark:text-gray-500">
-              {t('routePanel.clearSelection')}
+              {t("routePanel.clearSelection")}
             </Text>
           </TouchableOpacity>
         </View>
       )}
+
+      {/* Edit Modal */}
+      <EditTaskModal
+        visible={editingTask !== null}
+        task={editingTask}
+        onClose={handleEditClose}
+        onSave={editTask}
+      />
     </View>
   );
 }

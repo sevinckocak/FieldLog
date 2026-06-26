@@ -2,10 +2,27 @@
   "emptyTitle": "Henüz görev yok",
   "emptySubtitle": "Haritada uzun bas ve görev ekle",
   "deleteButton": "Sil",
+  "editButton": "Düzenle",
   "status": {
     "draft": "Taslak",
     "active": "Aktif",
     "synced": "Senkronize"
+  },
+  "priority": {
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek"
+  },
+  "editTask": {
+    "modalTitle": "Görevi Düzenle",
+    "titleLabel": "Başlık",
+    "titlePlaceholder": "Görev başlığı",
+    "descriptionLabel": "Açıklama",
+    "descriptionPlaceholder": "Açıklama ekle...",
+    "statusLabel": "Durum",
+    "priorityLabel": "Öncelik",
+    "validationTitle": "Başlık boş olamaz.",
+    "errorSave": "Kaydedilemedi, tekrar deneyin."
   },
   "routePanel": {
     "selectedCount": "{{count}} görev seçildi",

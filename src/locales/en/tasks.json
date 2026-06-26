@@ -2,19 +2,36 @@
   "emptyTitle": "No tasks yet",
   "emptySubtitle": "Long press on the map to add a task",
   "deleteButton": "Delete",
+  "editButton": "Edit",
   "status": {
     "draft": "Draft",
     "active": "Active",
     "synced": "Synced"
   },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "editTask": {
+    "modalTitle": "Edit Task",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Task title",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Add a description...",
+    "statusLabel": "Status",
+    "priorityLabel": "Priority",
+    "validationTitle": "Title cannot be empty.",
+    "errorSave": "Failed to save. Please try again."
+  },
   "routePanel": {
     "selectedCount": "{{count}} task(s) selected",
     "calculating": "Calculating route...",
     "byOrder": "By Order",
-    "byOrderHint": "Your selected order",
+    "byOrderHint": "Selected order",
     "optimize": "Optimize",
-    "optimizeHint": "Start from nearest",
-    "locationError": "Location unavailable, please wait",
+    "optimizeHint": "Shortest route",
+    "locationError": "Location unavailable",
     "clearSelection": "Clear Selection"
   }
 }

@@ -1,12 +1,29 @@
 {
   "emptyTitle": "Aucune tâche pour l'instant",
   "emptySubtitle": "Appuyez longuement sur la carte pour ajouter une tâche",
+  "deleteButton": "Supprimer",
+  "editButton": "Modifier",
   "status": {
     "draft": "Brouillon",
     "active": "Actif",
     "synced": "Synchronisé"
   },
-  "deleteButton": "Supprimer",
+  "priority": {
+    "low": "Faible",
+    "medium": "Moyen",
+    "high": "Élevé"
+  },
+  "editTask": {
+    "modalTitle": "Modifier la tâche",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Titre de la tâche",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Ajouter une description...",
+    "statusLabel": "Statut",
+    "priorityLabel": "Priorité",
+    "validationTitle": "Le titre ne peut pas être vide.",
+    "errorSave": "Échec de l'enregistrement. Réessayez."
+  },
   "routePanel": {
     "selectedCount": "{{count}} tâche(s) sélectionnée(s)",
     "calculating": "Calcul de l'itinéraire...",

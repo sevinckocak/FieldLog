@@ -1,5 +1,7 @@
 export type TaskStatus = "active" | "draft" | "synced";
 
+export type TaskPriority = "low" | "medium" | "high";
+
 export interface Task {
   id: number;
   title: string;
@@ -7,6 +9,7 @@ export interface Task {
   lat: number;
   lng: number;
   status: TaskStatus;
+  priority?: TaskPriority;
   firestoreId?: string | null;
   needsSync?: boolean;
 }
@@ -22,5 +25,3 @@ export interface LatLng {
   latitude: number;
   longitude: number;
 }
-
-

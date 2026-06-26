@@ -39,4 +39,9 @@ export async function initDatabase(): Promise<void> {
       "ALTER TABLE tasks ADD COLUMN needs_sync INTEGER NOT NULL DEFAULT 1;"
     );
   } catch {}
+  try {
+    await database.execAsync(
+      "ALTER TABLE tasks ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium';"
+    );
+  } catch {}
 }

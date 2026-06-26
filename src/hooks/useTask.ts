@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from "react";
-import { Task, TaskStatus } from "../types";
+import { Task, TaskPriority, TaskStatus } from "../types";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   fetchTasks,
   addTask,
+  editTask,
   updateStatus,
   removeTask,
   selectAllTasks,
@@ -16,6 +17,13 @@ interface UseTaskReturn {
   loading: boolean;
   error: string | null;
   addTask: (input: Omit<Task, "id">) => Promise<Task>;
+  editTask: (input: {
+    id: number;
+    title: string;
+    description: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+  }) => Promise<Task>;
   changeStatus: (id: number, status: TaskStatus) => Promise<void>;
   removeTask: (id: number) => Promise<void>;
   refresh: () => void;
@@ -43,6 +51,20 @@ export function useTask(): UseTaskReturn {
     [dispatch]
   );
 
+  const handleEditTask = useCallback(
+    async (input: {
+      id: number;
+      title: string;
+      description: string;
+      status: TaskStatus;
+      priority: TaskPriority;
+    }): Promise<Task> => {
+      const result = await dispatch(editTask(input)).unwrap();
+      return result;
+    },
+    [dispatch]
+  );
+
   const changeStatus = useCallback(
     async (id: number, status: TaskStatus): Promise<void> => {
       await dispatch(updateStatus({ id, status })).unwrap();
@@ -62,6 +84,7 @@ export function useTask(): UseTaskReturn {
     loading,
     error,
     addTask: handleAddTask,
+    editTask: handleEditTask,
     changeStatus,
     removeTask: handleRemoveTask,
     refresh,

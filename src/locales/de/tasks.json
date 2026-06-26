@@ -1,12 +1,29 @@
 {
   "emptyTitle": "Noch keine Aufgaben",
   "emptySubtitle": "Karte gedrückt halten, um Aufgabe hinzuzufügen",
+  "deleteButton": "Löschen",
+  "editButton": "Bearbeiten",
   "status": {
     "draft": "Entwurf",
     "active": "Aktiv",
     "synced": "Synchronisiert"
   },
-  "deleteButton": "Löschen",
+  "priority": {
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch"
+  },
+  "editTask": {
+    "modalTitle": "Aufgabe bearbeiten",
+    "titleLabel": "Titel",
+    "titlePlaceholder": "Aufgabentitel",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Beschreibung hinzufügen...",
+    "statusLabel": "Status",
+    "priorityLabel": "Priorität",
+    "validationTitle": "Titel darf nicht leer sein.",
+    "errorSave": "Speichern fehlgeschlagen. Erneut versuchen."
+  },
   "routePanel": {
     "selectedCount": "{{count}} Aufgabe(n) ausgewählt",
     "calculating": "Route wird berechnet...",

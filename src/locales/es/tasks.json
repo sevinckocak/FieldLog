@@ -1,12 +1,29 @@
 {
   "emptyTitle": "Aún no hay tareas",
   "emptySubtitle": "Mantén presionado el mapa para agregar una tarea",
+  "deleteButton": "Eliminar",
+  "editButton": "Editar",
   "status": {
     "draft": "Borrador",
     "active": "Activo",
     "synced": "Sincronizado"
   },
-  "deleteButton": "Eliminar",
+  "priority": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta"
+  },
+  "editTask": {
+    "modalTitle": "Editar tarea",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Título de la tarea",
+    "descriptionLabel": "Descripción",
+    "descriptionPlaceholder": "Agregar descripción...",
+    "statusLabel": "Estado",
+    "priorityLabel": "Prioridad",
+    "validationTitle": "El título no puede estar vacío.",
+    "errorSave": "No se pudo guardar. Inténtalo de nuevo."
+  },
   "routePanel": {
     "selectedCount": "{{count}} tarea(s) seleccionada(s)",
     "calculating": "Calculando ruta...",

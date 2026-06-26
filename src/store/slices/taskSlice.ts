@@ -7,6 +7,7 @@ import {
 import {
   getAllTasks,
   createTask,
+  updateTask as updateTaskInDB,
   updateTaskStatus,
   deleteTask,
   markAsSynced,
@@ -18,7 +19,7 @@ import {
   syncAllPending,
   fetchTasksFromFirestore,
 } from "../../services/syncService";
-import { Task, TaskStatus } from "../../types";
+import { Task, TaskPriority, TaskStatus } from "../../types";
 import type { RootState } from "../index";
 
 const taskAdapter = createEntityAdapter<Task>();
@@ -47,7 +48,6 @@ export const fetchTasks = createAsyncThunk<Task[], { force?: boolean } | void>(
 
     if (uid) {
       try {
-        // Önce offline bekleyenleri gönder, sonra Firestore'u kaynak al
         await syncAllPending(uid);
         const firestoreTasks = await fetchTasksFromFirestore(uid);
         const tasks: Task[] = [];
@@ -57,7 +57,6 @@ export const fetchTasks = createAsyncThunk<Task[], { force?: boolean } | void>(
         }
         return tasks;
       } catch {
-        // Offline: SQLite'tan yükle
         return getAllTasks();
       }
     }
@@ -65,7 +64,6 @@ export const fetchTasks = createAsyncThunk<Task[], { force?: boolean } | void>(
     return getAllTasks();
   },
   {
-    // Koşul: force değilse ve cache tazeyse Firestore'a gitme
     condition: (arg, { getState }) => {
       const force = (arg as { force?: boolean })?.force ?? false;
       if (force) return true;
@@ -75,7 +73,7 @@ export const fetchTasks = createAsyncThunk<Task[], { force?: boolean } | void>(
       const hasData = (ids as number[]).length > 0;
 
       if (lastFetched && hasData && Date.now() - lastFetched < CACHE_TTL_MS) {
-        return false; // thunk iptal, loading state tetiklenmez
+        return false;
       }
       return true;
     },
@@ -93,10 +91,46 @@ export const addTask = createAsyncThunk<Task, Omit<Task, "id">>(
         await markAsSynced(task.id, firestoreId);
         return { ...task, firestoreId, needsSync: false };
       } catch {
-        // Offline: needs_sync = 1 SQLite'ta zaten var, sonraki senkronda gönderilir
+        // Offline: needs_sync = 1 SQLite'ta zaten var
       }
     }
     return task;
+  }
+);
+
+export const editTask = createAsyncThunk<
+  Task,
+  { id: number; title: string; description: string; status: TaskStatus; priority: TaskPriority }
+>(
+  "tasks/edit",
+  async ({ id, title, description, status, priority }, { getState }) => {
+    const state = getState() as RootState;
+    const currentTask = state.tasks.entities[id];
+    if (!currentTask) throw new Error("Task not found");
+
+    await updateTaskInDB(id, { title, description, status, priority });
+
+    const updated: Task = {
+      ...currentTask,
+      title,
+      description,
+      status,
+      priority,
+      needsSync: true,
+    };
+
+    const uid = state.auth.user?.uid;
+    if (uid) {
+      try {
+        const firestoreId = await pushTaskToFirestore(updated, uid);
+        await markAsSynced(id, firestoreId);
+        return { ...updated, firestoreId, needsSync: false };
+      } catch {
+        // Offline: bir sonraki sync'te gönderilecek
+      }
+    }
+
+    return updated;
   }
 );
 
@@ -116,7 +150,7 @@ export const updateStatus = createAsyncThunk<
       await markAsSynced(id, firestoreId);
       return { id, status, firestoreId, needsSync: false };
     } catch {
-      // Offline: bir sonraki sync'te gönderilecek
+      // Offline
     }
   }
 
@@ -144,10 +178,6 @@ export const removeTask = createAsyncThunk<number, number>(
   }
 );
 
-/**
- * SQLite'ta bekleyen tüm task'ları Firestore'a gönderir.
- * Uygulama açılırken ve ön plana gelirken çağrılır.
- */
 export const syncPendingTasksAsync = createAsyncThunk<number>(
   "tasks/syncPending",
   async (_, { getState, dispatch }) => {
@@ -155,7 +185,6 @@ export const syncPendingTasksAsync = createAsyncThunk<number>(
     if (!uid) return 0;
     const count = await syncAllPending(uid);
     if (count > 0) {
-      // Sync sonrası firestoreId'lerin Redux'a yansıması için zorla yenile
       dispatch(fetchTasks({ force: true }));
     }
     return count;
@@ -189,6 +218,14 @@ const taskSlice = createSlice({
       })
       .addCase(addTask.rejected, (state, action) => {
         state.error = action.error.message ?? "Görev eklenemedi";
+      })
+
+      // editTask
+      .addCase(editTask.fulfilled, (state, action) => {
+        taskAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(editTask.rejected, (state, action) => {
+        state.error = action.error.message ?? "Görev güncellenemedi";
       })
 
       // updateStatus

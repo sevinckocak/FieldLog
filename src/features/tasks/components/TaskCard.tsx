@@ -1,12 +1,14 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { Task, TaskStatus } from "../../../types";
+import { Task, TaskPriority, TaskStatus } from "../../../types";
 
 interface TaskCardProps {
   task: Task;
   onChangeStatus: (id: number, status: TaskStatus) => void;
   onRemove: (id: number) => void;
+  onEdit: (task: Task) => void;
   selected?: boolean;
   onSelect?: (id: number) => void;
 }
@@ -19,23 +21,31 @@ const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
 
 // NativeWind tam sınıf string'lerini statik görmeli — parçalara bölme
 const STATUS_STYLES: Record<TaskStatus, { badge: string; text: string }> = {
-  draft:  { badge: "bg-gray-100 dark:bg-gray-800",  text: "text-gray-600 dark:text-gray-400" },
+  draft:  { badge: "bg-gray-100 dark:bg-gray-800",   text: "text-gray-600 dark:text-gray-400" },
   active: { badge: "bg-green-100 dark:bg-green-950", text: "text-green-700 dark:text-green-400" },
   synced: { badge: "bg-blue-100 dark:bg-blue-950",   text: "text-blue-700 dark:text-blue-400" },
 };
 
-function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCardProps) {
-  const { t } = useTranslation('tasks');
+const PRIORITY_DOT: Record<TaskPriority, string> = {
+  low:    "w-2 h-2 rounded-full bg-emerald-400 dark:bg-emerald-500",
+  medium: "w-2 h-2 rounded-full bg-amber-400 dark:bg-amber-500",
+  high:   "w-2 h-2 rounded-full bg-red-400 dark:bg-red-500",
+};
+
+function TaskCard({ task, onChangeStatus, onRemove, onEdit, selected, onSelect }: TaskCardProps) {
+  const { t } = useTranslation("tasks");
 
   const STATUS_LABEL: Record<TaskStatus, string> = {
-    draft: t('status.draft'),
-    active: t('status.active'),
-    synced: t('status.synced'),
+    draft:  t("status.draft"),
+    active: t("status.active"),
+    synced: t("status.synced"),
   };
 
   const handleCycleStatus = () => {
     onChangeStatus(task.id, STATUS_CYCLE[task.status]);
   };
+
+  const priority = task.priority ?? "medium";
 
   return (
     <View className="mx-4 my-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
@@ -79,11 +89,16 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
                   {task.description}
                 </Text>
               )}
-              <Text className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                {task.lat.toFixed(5)}, {task.lng.toFixed(5)}
-              </Text>
+              {/* Öncelik göstergesi + koordinat */}
+              <View className="flex-row items-center gap-1.5 mt-2">
+                <View className={PRIORITY_DOT[priority]} />
+                <Text className="text-xs text-gray-400 dark:text-gray-500">
+                  {task.lat.toFixed(5)}, {task.lng.toFixed(5)}
+                </Text>
+              </View>
             </View>
 
+            {/* Durum rozeti */}
             <TouchableOpacity
               onPress={handleCycleStatus}
               className={`px-2 py-1 rounded-full ${STATUS_STYLES[task.status].badge}`}
@@ -94,9 +109,24 @@ function TaskCard({ task, onChangeStatus, onRemove, selected, onSelect }: TaskCa
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={() => onRemove(task.id)} className="mt-3 self-end">
-            <Text className="text-xs text-red-400">{t('deleteButton')}</Text>
-          </TouchableOpacity>
+          {/* Alt aksiyonlar */}
+          <View className="flex-row items-center justify-end gap-4 mt-3">
+            <TouchableOpacity
+              onPress={() => onEdit(task)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              className="flex-row items-center gap-1"
+            >
+              <Ionicons name="pencil-outline" size={13} color="#60A5FA" />
+              <Text className="text-xs text-blue-400">{t("editButton")}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => onRemove(task.id)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text className="text-xs text-red-400">{t("deleteButton")}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
