@@ -24,6 +24,18 @@
     "validationTitle": "Le titre ne peut pas être vide.",
     "errorSave": "Échec de l'enregistrement. Réessayez."
   },
+  "search": {
+    "placeholder": "Rechercher des tâches...",
+    "noResults": "Aucun résultat pour « {{query}} »",
+    "clearSearch": "Effacer la recherche"
+  },
+  "sort": {
+    "title": "Trier par",
+    "dateDesc": "Date : Plus récent d'abord",
+    "dateAsc": "Date : Plus ancien d'abord",
+    "priorityDesc": "Priorité : Haute à Basse",
+    "priorityAsc": "Priorité : Basse à Haute"
+  },
   "filter": {
     "all": "Tous",
     "pending": "En attente",

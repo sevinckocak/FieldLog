@@ -7,9 +7,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { Task, TaskFilter, TaskStatus } from "../../../types";
+import { useColorScheme } from "nativewind";
+import {
+  SortOption,
+  Task,
+  TaskFilter,
+  TaskPriority,
+  TaskStatus,
+} from "../../../types";
 import { useTask } from "../../../hooks/useTask";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { buildRoute, selectRouteLoading } from "../../../store/slices/routeSlice";
@@ -17,8 +25,22 @@ import useLocation from "../../../hooks/useLocation";
 import TaskCard from "../components/TaskCard";
 import EditTaskModal from "../components/EditTaskModal";
 import TaskFilterBar from "../components/TaskFilterBar";
+import TaskSearchBar from "../components/TaskSearchBar";
+import TaskSortModal from "../components/TaskSortModal";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const CARD_HEIGHT = 120;
+
+const DEFAULT_SORT: SortOption = { field: "date", order: "desc" };
+
+const PRIORITY_RANK: Record<TaskPriority, number> = {
+  high: 2,
+  medium: 1,
+  low: 0,
+};
+
+// ─── Pure pipeline functions ───────────────────────────────────────────────────
 
 function applyFilter(tasks: Task[], filter: TaskFilter): Task[] {
   switch (filter) {
@@ -32,7 +54,6 @@ function applyFilter(tasks: Task[], filter: TaskFilter): Task[] {
       const m = now.getMonth();
       const d = now.getDate();
       return tasks.filter((t) => {
-        // created_at is Unix seconds in SQLite
         const td = new Date(t.createdAt * 1000);
         return td.getFullYear() === y && td.getMonth() === m && td.getDate() === d;
       });
@@ -44,27 +65,67 @@ function applyFilter(tasks: Task[], filter: TaskFilter): Task[] {
   }
 }
 
+function applySearch(tasks: Task[], query: string): Task[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return tasks;
+  return tasks.filter(
+    (t) =>
+      t.title.toLowerCase().includes(q) ||
+      t.description.toLowerCase().includes(q)
+  );
+}
+
+function applySort(tasks: Task[], sort: SortOption): Task[] {
+  return [...tasks].sort((a, b) => {
+    if (sort.field === "date") {
+      return sort.order === "desc"
+        ? b.createdAt - a.createdAt
+        : a.createdAt - b.createdAt;
+    }
+    // priority
+    const pa = PRIORITY_RANK[a.priority ?? "medium"];
+    const pb = PRIORITY_RANK[b.priority ?? "medium"];
+    return sort.order === "desc" ? pb - pa : pa - pb;
+  });
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 function TaskListScreen() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { t } = useTranslation("tasks");
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
   const { tasks, loading, error, editTask, changeStatus, removeTask } = useTask();
   const { location } = useLocation();
   const routeLoading = useAppSelector(selectRouteLoading);
 
+  // ── UI state ──
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [activeFilter, setActiveFilter] = useState<TaskFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>(DEFAULT_SORT);
+  const [showSortModal, setShowSortModal] = useState(false);
 
-  const filteredTasks = useMemo(
-    () => applyFilter(tasks, activeFilter),
-    [tasks, activeFilter]
+  // ── Derived: filter → search → sort (no Firestore calls) ──
+  const displayTasks = useMemo(
+    () => applySort(applySearch(applyFilter(tasks, activeFilter), searchQuery), sortOption),
+    [tasks, activeFilter, searchQuery, sortOption]
   );
 
+  const isSortActive =
+    sortOption.field !== DEFAULT_SORT.field ||
+    sortOption.order !== DEFAULT_SORT.order;
+
+  // ── Handlers ──
   const handleFilterChange = useCallback((filter: TaskFilter) => {
     setActiveFilter(filter);
     setSelectedIds([]);
   }, []);
+
+  const handleSearchClear = useCallback(() => setSearchQuery(""), []);
 
   const toggleSelect = useCallback((id: number) => {
     setSelectedIds((prev) =>
@@ -114,13 +175,8 @@ function TaskListScreen() {
     [removeTask]
   );
 
-  const handleEdit = useCallback((task: Task) => {
-    setEditingTask(task);
-  }, []);
-
-  const handleEditClose = useCallback(() => {
-    setEditingTask(null);
-  }, []);
+  const handleEdit = useCallback((task: Task) => setEditingTask(task), []);
+  const handleEditClose = useCallback(() => setEditingTask(null), []);
 
   const renderItem: ListRenderItem<Task> = useCallback(
     ({ item }) => (
@@ -135,6 +191,8 @@ function TaskListScreen() {
     ),
     [handleChangeStatus, handleRemove, handleEdit, selectedIds, toggleSelect]
   );
+
+  // ─── Loading / Error ───────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -152,36 +210,74 @@ function TaskListScreen() {
     );
   }
 
+  // ─── Render ────────────────────────────────────────────────────────────────
+
   const hasSelection = selectedIds.length > 0;
+  const emptyIconColor = isDark ? "#374151" : "#D1D5DB";
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-950">
+      {/* Search bar + sort button */}
+      <TaskSearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onClear={handleSearchClear}
+        isSortActive={isSortActive}
+        onSortPress={() => setShowSortModal(true)}
+      />
+
+      {/* Filter chips */}
       <TaskFilterBar active={activeFilter} onChange={handleFilterChange} />
 
+      {/* Task list */}
       <FlatList
-        data={filteredTasks}
+        data={displayTasks}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         removeClippedSubviews
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={
-          filteredTasks.length === 0
+          displayTasks.length === 0
             ? { flex: 1 }
             : { paddingVertical: 8, paddingBottom: hasSelection ? 112 : 8 }
         }
         ListEmptyComponent={
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-gray-500 dark:text-gray-400 text-base">
-              {t("emptyTitle")}
-            </Text>
-            <Text className="text-gray-400 dark:text-gray-500 text-sm mt-1">
-              {t("emptySubtitle")}
-            </Text>
+          <View className="flex-1 items-center justify-center px-6">
+            {searchQuery.trim() ? (
+              <>
+                <Ionicons
+                  name="search-outline"
+                  size={44}
+                  color={emptyIconColor}
+                />
+                <Text className="text-gray-500 dark:text-gray-400 text-base text-center mt-3">
+                  {t("search.noResults", { query: searchQuery.trim() })}
+                </Text>
+                <TouchableOpacity
+                  onPress={handleSearchClear}
+                  className="mt-3 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800"
+                >
+                  <Text className="text-sm text-gray-600 dark:text-gray-300">
+                    {t("search.clearSearch")}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text className="text-gray-500 dark:text-gray-400 text-base">
+                  {t("emptyTitle")}
+                </Text>
+                <Text className="text-gray-400 dark:text-gray-500 text-sm mt-1">
+                  {t("emptySubtitle")}
+                </Text>
+              </>
+            )}
           </View>
         }
       />
 
-      {/* Rota oluştur paneli */}
+      {/* Route panel */}
       {hasSelection && (
         <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 shadow-lg">
           <Text className="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">
@@ -242,12 +338,19 @@ function TaskListScreen() {
         </View>
       )}
 
-      {/* Edit Modal */}
+      {/* Modals */}
       <EditTaskModal
         visible={editingTask !== null}
         task={editingTask}
         onClose={handleEditClose}
         onSave={editTask}
+      />
+
+      <TaskSortModal
+        visible={showSortModal}
+        current={sortOption}
+        onSelect={setSortOption}
+        onClose={() => setShowSortModal(false)}
       />
     </View>
   );

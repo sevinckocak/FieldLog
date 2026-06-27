@@ -24,6 +24,18 @@
     "validationTitle": "Başlık boş olamaz.",
     "errorSave": "Kaydedilemedi, tekrar deneyin."
   },
+  "search": {
+    "placeholder": "Görev ara...",
+    "noResults": "\"{{query}}\" için sonuç bulunamadı",
+    "clearSearch": "Aramayı temizle"
+  },
+  "sort": {
+    "title": "Sıralama",
+    "dateDesc": "Tarih: Yeniden eskiye",
+    "dateAsc": "Tarih: Eskiden yeniye",
+    "priorityDesc": "Öncelik: Yüksekten düşüğe",
+    "priorityAsc": "Öncelik: Düşükten yükseğe"
+  },
   "filter": {
     "all": "Tümü",
     "pending": "Bekleyen",

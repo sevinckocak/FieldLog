@@ -24,6 +24,18 @@
     "validationTitle": "Title cannot be empty.",
     "errorSave": "Failed to save. Please try again."
   },
+  "search": {
+    "placeholder": "Search tasks...",
+    "noResults": "No results for \"{{query}}\"",
+    "clearSearch": "Clear search"
+  },
+  "sort": {
+    "title": "Sort by",
+    "dateDesc": "Date: Newest first",
+    "dateAsc": "Date: Oldest first",
+    "priorityDesc": "Priority: High to Low",
+    "priorityAsc": "Priority: Low to High"
+  },
   "filter": {
     "all": "All",
     "pending": "Pending",

@@ -4,6 +4,14 @@ export type TaskPriority = "low" | "medium" | "high";
 
 export type TaskFilter = "all" | "pending" | "completed" | "today" | "high";
 
+export type SortField = "date" | "priority";
+export type SortOrder = "asc" | "desc";
+
+export interface SortOption {
+  field: SortField;
+  order: SortOrder;
+}
+
 export interface Task {
   id: number;
   title: string;

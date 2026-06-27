@@ -24,6 +24,18 @@
     "validationTitle": "Titel darf nicht leer sein.",
     "errorSave": "Speichern fehlgeschlagen. Erneut versuchen."
   },
+  "search": {
+    "placeholder": "Aufgaben suchen...",
+    "noResults": "Keine Ergebnisse für \"{{query}}\"",
+    "clearSearch": "Suche löschen"
+  },
+  "sort": {
+    "title": "Sortieren nach",
+    "dateDesc": "Datum: Neueste zuerst",
+    "dateAsc": "Datum: Älteste zuerst",
+    "priorityDesc": "Priorität: Hoch nach Niedrig",
+    "priorityAsc": "Priorität: Niedrig nach Hoch"
+  },
   "filter": {
     "all": "Alle",
     "pending": "Ausstehend",

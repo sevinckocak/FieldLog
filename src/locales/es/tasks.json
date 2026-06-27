@@ -24,6 +24,18 @@
     "validationTitle": "El título no puede estar vacío.",
     "errorSave": "No se pudo guardar. Inténtalo de nuevo."
   },
+  "search": {
+    "placeholder": "Buscar tareas...",
+    "noResults": "Sin resultados para \"{{query}}\"",
+    "clearSearch": "Limpiar búsqueda"
+  },
+  "sort": {
+    "title": "Ordenar por",
+    "dateDesc": "Fecha: Más reciente primero",
+    "dateAsc": "Fecha: Más antiguo primero",
+    "priorityDesc": "Prioridad: Alta a Baja",
+    "priorityAsc": "Prioridad: Baja a Alta"
+  },
   "filter": {
     "all": "Todos",
     "pending": "Pendiente",
