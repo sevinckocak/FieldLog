@@ -24,6 +24,13 @@
     "validationTitle": "Titel darf nicht leer sein.",
     "errorSave": "Speichern fehlgeschlagen. Erneut versuchen."
   },
+  "filter": {
+    "all": "Alle",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "today": "Heute",
+    "high": "Hohe Priorität"
+  },
   "routePanel": {
     "selectedCount": "{{count}} Aufgabe(n) ausgewählt",
     "calculating": "Route wird berechnet...",

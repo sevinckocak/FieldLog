@@ -24,6 +24,13 @@
     "validationTitle": "El título no puede estar vacío.",
     "errorSave": "No se pudo guardar. Inténtalo de nuevo."
   },
+  "filter": {
+    "all": "Todos",
+    "pending": "Pendiente",
+    "completed": "Completado",
+    "today": "Hoy",
+    "high": "Alta Prioridad"
+  },
   "routePanel": {
     "selectedCount": "{{count}} tarea(s) seleccionada(s)",
     "calculating": "Calculando ruta...",

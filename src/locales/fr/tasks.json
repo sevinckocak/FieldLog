@@ -24,6 +24,13 @@
     "validationTitle": "Le titre ne peut pas être vide.",
     "errorSave": "Échec de l'enregistrement. Réessayez."
   },
+  "filter": {
+    "all": "Tous",
+    "pending": "En attente",
+    "completed": "Terminé",
+    "today": "Aujourd'hui",
+    "high": "Priorité haute"
+  },
   "routePanel": {
     "selectedCount": "{{count}} tâche(s) sélectionnée(s)",
     "calculating": "Calcul de l'itinéraire...",

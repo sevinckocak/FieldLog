@@ -23,6 +23,7 @@ function rowToTask(row: TaskRow): Task {
     lng: row.lng,
     status: row.status,
     priority: row.priority ?? 'medium',
+    createdAt: row.created_at,
     firestoreId: row.firestore_id ?? null,
     needsSync: row.needs_sync === 1,
   };
@@ -60,6 +61,7 @@ export async function createTask(input: Omit<Task, "id">): Promise<Task> {
     lng: input.lng,
     status: input.status,
     priority,
+    createdAt: Math.floor(Date.now() / 1000),
     firestoreId: null,
     needsSync: true,
   };
@@ -155,6 +157,7 @@ export async function upsertTaskFromFirestore(
     lng: data.lng,
     status: data.status,
     priority,
+    createdAt: Math.floor(Date.now() / 1000),
     firestoreId,
     needsSync: false,
   };

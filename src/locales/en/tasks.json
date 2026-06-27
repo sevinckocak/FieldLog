@@ -24,6 +24,13 @@
     "validationTitle": "Title cannot be empty.",
     "errorSave": "Failed to save. Please try again."
   },
+  "filter": {
+    "all": "All",
+    "pending": "Pending",
+    "completed": "Completed",
+    "today": "Today",
+    "high": "High Priority"
+  },
   "routePanel": {
     "selectedCount": "{{count}} task(s) selected",
     "calculating": "Calculating route...",

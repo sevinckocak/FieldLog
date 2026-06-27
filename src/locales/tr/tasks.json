@@ -24,6 +24,13 @@
     "validationTitle": "Başlık boş olamaz.",
     "errorSave": "Kaydedilemedi, tekrar deneyin."
   },
+  "filter": {
+    "all": "Tümü",
+    "pending": "Bekleyen",
+    "completed": "Tamamlanan",
+    "today": "Bugün",
+    "high": "Yüksek Öncelik"
+  },
   "routePanel": {
     "selectedCount": "{{count}} görev seçildi",
     "calculating": "Rota hesaplanıyor...",

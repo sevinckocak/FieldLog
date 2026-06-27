@@ -2,6 +2,8 @@ export type TaskStatus = "active" | "draft" | "synced";
 
 export type TaskPriority = "low" | "medium" | "high";
 
+export type TaskFilter = "all" | "pending" | "completed" | "today" | "high";
+
 export interface Task {
   id: number;
   title: string;
@@ -10,6 +12,8 @@ export interface Task {
   lng: number;
   status: TaskStatus;
   priority?: TaskPriority;
+  /** Unix timestamp in seconds (SQLite strftime('%s','now')) */
+  createdAt: number;
   firestoreId?: string | null;
   needsSync?: boolean;
 }

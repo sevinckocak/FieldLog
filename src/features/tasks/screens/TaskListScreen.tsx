@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,15 +9,40 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { Task, TaskStatus } from "../../../types";
+import { Task, TaskFilter, TaskStatus } from "../../../types";
 import { useTask } from "../../../hooks/useTask";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { buildRoute, selectRouteLoading } from "../../../store/slices/routeSlice";
 import useLocation from "../../../hooks/useLocation";
 import TaskCard from "../components/TaskCard";
 import EditTaskModal from "../components/EditTaskModal";
+import TaskFilterBar from "../components/TaskFilterBar";
 
 const CARD_HEIGHT = 120;
+
+function applyFilter(tasks: Task[], filter: TaskFilter): Task[] {
+  switch (filter) {
+    case "pending":
+      return tasks.filter((t) => t.status === "draft" || t.status === "active");
+    case "completed":
+      return tasks.filter((t) => t.status === "synced");
+    case "today": {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const d = now.getDate();
+      return tasks.filter((t) => {
+        // created_at is Unix seconds in SQLite
+        const td = new Date(t.createdAt * 1000);
+        return td.getFullYear() === y && td.getMonth() === m && td.getDate() === d;
+      });
+    }
+    case "high":
+      return tasks.filter((t) => t.priority === "high");
+    default:
+      return tasks;
+  }
+}
 
 function TaskListScreen() {
   const dispatch = useAppDispatch();
@@ -29,6 +54,17 @@ function TaskListScreen() {
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [activeFilter, setActiveFilter] = useState<TaskFilter>("all");
+
+  const filteredTasks = useMemo(
+    () => applyFilter(tasks, activeFilter),
+    [tasks, activeFilter]
+  );
+
+  const handleFilterChange = useCallback((filter: TaskFilter) => {
+    setActiveFilter(filter);
+    setSelectedIds([]);
+  }, []);
 
   const toggleSelect = useCallback((id: number) => {
     setSelectedIds((prev) =>
@@ -120,14 +156,16 @@ function TaskListScreen() {
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-950">
+      <TaskFilterBar active={activeFilter} onChange={handleFilterChange} />
+
       <FlatList
-        data={tasks}
+        data={filteredTasks}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         removeClippedSubviews
         contentContainerStyle={
-          tasks.length === 0
+          filteredTasks.length === 0
             ? { flex: 1 }
             : { paddingVertical: 8, paddingBottom: hasSelection ? 112 : 8 }
         }
