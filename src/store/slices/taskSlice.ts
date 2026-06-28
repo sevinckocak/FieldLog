@@ -228,7 +228,11 @@ const taskSlice = createSlice({
         state.error = action.error.message ?? "Görev güncellenemedi";
       })
 
-      // updateStatus
+      // updateStatus — pending anında UI günceller (optimistic), fulfilled Firestore ID'yi yazar
+      .addCase(updateStatus.pending, (state, action) => {
+        const { id, status } = action.meta.arg;
+        taskAdapter.updateOne(state, { id, changes: { status } });
+      })
       .addCase(updateStatus.fulfilled, (state, action) => {
         taskAdapter.updateOne(state, {
           id: action.payload.id,

@@ -13,44 +13,41 @@ interface TaskCardProps {
   onSelect?: (id: number) => void;
 }
 
-const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
-  draft: "active",
-  active: "synced",
-  synced: "draft",
-};
-
-// NativeWind tam sınıf string'lerini statik görmeli — parçalara bölme
-const STATUS_STYLES: Record<TaskStatus, { badge: string; text: string }> = {
-  draft:  { badge: "bg-gray-100 dark:bg-gray-800",   text: "text-gray-600 dark:text-gray-400" },
-  active: { badge: "bg-green-100 dark:bg-green-950", text: "text-green-700 dark:text-green-400" },
-  synced: { badge: "bg-blue-100 dark:bg-blue-950",   text: "text-blue-700 dark:text-blue-400" },
-};
-
 const PRIORITY_DOT: Record<TaskPriority, string> = {
   low:    "w-2 h-2 rounded-full bg-emerald-400 dark:bg-emerald-500",
   medium: "w-2 h-2 rounded-full bg-amber-400 dark:bg-amber-500",
   high:   "w-2 h-2 rounded-full bg-red-400 dark:bg-red-500",
 };
 
-function TaskCard({ task, onChangeStatus, onRemove, onEdit, selected, onSelect }: TaskCardProps) {
+function TaskCard({
+  task,
+  onChangeStatus,
+  onRemove,
+  onEdit,
+  selected,
+  onSelect,
+}: TaskCardProps) {
   const { t } = useTranslation("tasks");
 
-  const STATUS_LABEL: Record<TaskStatus, string> = {
-    draft:  t("status.draft"),
-    active: t("status.active"),
-    synced: t("status.synced"),
-  };
+  // "synced" = tamamlandı, diğerleri = beklemede
+  const isCompleted = task.status === "synced";
 
-  const handleCycleStatus = () => {
-    onChangeStatus(task.id, STATUS_CYCLE[task.status]);
+  const handleToggleCompletion = () => {
+    onChangeStatus(task.id, isCompleted ? "active" : "synced");
   };
 
   const priority = task.priority ?? "medium";
 
   return (
-    <View className="mx-4 my-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+    <View
+      className={`mx-4 my-2 rounded-xl shadow-sm border p-4 ${
+        isCompleted
+          ? "bg-gray-50 dark:bg-gray-900 border-emerald-100 dark:border-emerald-900"
+          : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
+      }`}
+    >
       <View className="flex-row items-start">
-        {/* Seçim checkbox'ı */}
+        {/* Rota seçim checkbox'ı — yalnızca rota-mod aktifken, orijinal konumda */}
         {onSelect !== undefined && (
           <TouchableOpacity
             onPress={() => onSelect(task.id)}
@@ -65,7 +62,9 @@ function TaskCard({ task, onChangeStatus, onRemove, onEdit, selected, onSelect }
               }`}
             >
               {selected && (
-                <Text className="text-white text-xs font-bold leading-none">✓</Text>
+                <Text className="text-white text-xs font-bold leading-none">
+                  ✓
+                </Text>
               )}
             </View>
           </TouchableOpacity>
@@ -74,22 +73,32 @@ function TaskCard({ task, onChangeStatus, onRemove, onEdit, selected, onSelect }
         {/* İçerik */}
         <View className="flex-1">
           <View className="flex-row items-start justify-between">
+            {/* Sol: başlık, açıklama, meta */}
             <View className="flex-1 mr-3">
               <Text
-                className="text-base font-semibold text-gray-900 dark:text-gray-100"
+                className={`text-base font-semibold ${
+                  isCompleted
+                    ? "text-gray-400 dark:text-gray-500"
+                    : "text-gray-900 dark:text-gray-100"
+                }`}
                 numberOfLines={1}
               >
                 {task.title}
               </Text>
+
               {task.description.length > 0 && (
                 <Text
-                  className="text-sm text-gray-500 dark:text-gray-400 mt-1"
+                  className={`text-sm mt-1 ${
+                    isCompleted
+                      ? "text-gray-300 dark:text-gray-600"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
                   numberOfLines={2}
                 >
                   {task.description}
                 </Text>
               )}
-              {/* Öncelik göstergesi + koordinat */}
+
               <View className="flex-row items-center gap-1.5 mt-2">
                 <View className={PRIORITY_DOT[priority]} />
                 <Text className="text-xs text-gray-400 dark:text-gray-500">
@@ -98,14 +107,17 @@ function TaskCard({ task, onChangeStatus, onRemove, onEdit, selected, onSelect }
               </View>
             </View>
 
-            {/* Durum rozeti */}
+            {/* Sağ üst: tamamlama toggle ikonu */}
             <TouchableOpacity
-              onPress={handleCycleStatus}
-              className={`px-2 py-1 rounded-full ${STATUS_STYLES[task.status].badge}`}
+              onPress={handleToggleCompletion}
+              activeOpacity={0.65}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <Text className={`text-xs font-medium ${STATUS_STYLES[task.status].text}`}>
-                {STATUS_LABEL[task.status]}
-              </Text>
+              <Ionicons
+                name={isCompleted ? "checkmark-circle" : "checkmark-circle-outline"}
+                size={26}
+                color={isCompleted ? "#10B981" : "#D1D5DB"}
+              />
             </TouchableOpacity>
           </View>
 
