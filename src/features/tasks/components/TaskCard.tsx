@@ -86,6 +86,16 @@ function TaskCard({
                 {task.title}
               </Text>
 
+              {/* Offline'da oluşturulup henüz senkronize edilmemiş task'lar */}
+              {task.needsSync && !isCompleted && (
+                <View className="flex-row items-center gap-0.5 mt-0.5">
+                  <Ionicons name="cloud-upload-outline" size={10} color="#F59E0B" />
+                  <Text className="text-xs text-amber-500 leading-none">
+                    {t("pendingSync")}
+                  </Text>
+                </View>
+              )}
+
               {task.description.length > 0 && (
                 <Text
                   className={`text-sm mt-1 ${

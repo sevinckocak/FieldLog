@@ -36,6 +36,7 @@
     "priorityDesc": "Öncelik: Yüksekten düşüğe",
     "priorityAsc": "Öncelik: Düşükten yükseğe"
   },
+  "pendingSync": "Senkron Bekliyor",
   "filter": {
     "all": "Tümü",
     "pending": "Bekleyen",

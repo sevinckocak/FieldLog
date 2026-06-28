@@ -12,5 +12,12 @@
   "themeMode": {
     "light": "Açık",
     "dark": "Koyu"
+  },
+  "sync": {
+    "syncing": "Görevler Senkronize Ediliyor...",
+    "progress": "{{done}} / {{total}} görev",
+    "success": "Tüm Görevler Senkronize Edildi!",
+    "successCount": "{{count}} görev buluta yüklendi",
+    "failedCount": "{{count}} başarısız · tekrar denenecek"
   }
 }

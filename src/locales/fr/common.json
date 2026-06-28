@@ -12,5 +12,12 @@
   "themeMode": {
     "light": "Clair",
     "dark": "Sombre"
+  },
+  "sync": {
+    "syncing": "Synchronisation en cours...",
+    "progress": "{{done}} / {{total}} tâches",
+    "success": "Toutes les tâches synchronisées !",
+    "successCount": "{{count}} tâches envoyées dans le cloud",
+    "failedCount": "{{count}} échouées · seront réessayées"
   }
 }

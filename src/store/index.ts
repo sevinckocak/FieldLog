@@ -4,6 +4,7 @@ import taskReducer from "./slices/taskSlice";
 import routeReducer from "./slices/routeSlice";
 import themeReducer from "./slices/themeSlice";
 import languageReducer from "./slices/languageSlice";
+import syncReducer from "./slices/syncSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     route: routeReducer,
     theme: themeReducer,
     language: languageReducer,
+    sync: syncReducer,
   },
 });
 

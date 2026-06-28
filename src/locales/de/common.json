@@ -12,5 +12,12 @@
   "themeMode": {
     "light": "Hell",
     "dark": "Dunkel"
+  },
+  "sync": {
+    "syncing": "Aufgaben werden synchronisiert...",
+    "progress": "{{done}} / {{total}} Aufgaben",
+    "success": "Alle Aufgaben synchronisiert!",
+    "successCount": "{{count}} Aufgaben in die Cloud hochgeladen",
+    "failedCount": "{{count}} fehlgeschlagen · werden wiederholt"
   }
 }

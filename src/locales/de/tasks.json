@@ -36,6 +36,7 @@
     "priorityDesc": "Priorität: Hoch nach Niedrig",
     "priorityAsc": "Priorität: Niedrig nach Hoch"
   },
+  "pendingSync": "Sync ausstehend",
   "filter": {
     "all": "Alle",
     "pending": "Ausstehend",
