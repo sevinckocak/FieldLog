@@ -5,8 +5,16 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../config/firebase/firebaseConfig';
 import type { RootState } from '../index';
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+/** AsyncStorage key'i — "Beni Hatırla" tercihini saklar */
+export const REMEMBER_ME_KEY = '@fieldlog/remember_me';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface SerializedUser {
   uid: string;
@@ -29,8 +37,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Firebase hata kodlarını i18n key'lerine dönüştürür.
-// auth.json errors.* altındaki key'lerle eşleşir.
+// Firebase hata kodlarını i18n key'lerine dönüştürür
 const FIREBASE_ERROR_KEYS: Record<string, string> = {
   'auth/invalid-credential': 'invalidCredential',
   'auth/user-not-found': 'userNotFound',
@@ -43,14 +50,18 @@ const FIREBASE_ERROR_KEYS: Record<string, string> = {
   'auth/user-disabled': 'userDisabled',
 };
 
+// ─── Thunks ───────────────────────────────────────────────────────────────────
+
 export const loginAsync = createAsyncThunk<
   void,
-  { email: string; password: string },
+  { email: string; password: string; rememberMe: boolean },
   { rejectValue: string }
->('auth/login', async ({ email, password }, { rejectWithValue }) => {
+>('auth/login', async ({ email, password, rememberMe }, { rejectWithValue }) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    // onAuthStateChanged listener → setUser → RootNavigator geçiş yapar
+    // "Beni Hatırla" tercihini kaydet — App.tsx bu değeri okuyarak
+    // sonraki açılışta session'ı devam ettirip ettirmeyeceğine karar verir
+    await AsyncStorage.setItem(REMEMBER_ME_KEY, rememberMe ? 'true' : 'false');
   } catch (e: any) {
     return rejectWithValue(FIREBASE_ERROR_KEYS[e.code] ?? 'default');
   }
@@ -64,7 +75,8 @@ export const signUpAsync = createAsyncThunk<
   try {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(user, { displayName: fullName });
-    // updateProfile onAuthStateChanged'ı tetiklemez, bu yüzden user'ı kendimiz döndürüyoruz
+    // Yeni kayıt sonrası oturumu kalıcı yap (kullanıcı henüz seçim yapmadı)
+    await AsyncStorage.setItem(REMEMBER_ME_KEY, 'true');
     return {
       uid: user.uid,
       email: user.email,
@@ -78,7 +90,11 @@ export const signUpAsync = createAsyncThunk<
 
 export const logoutAsync = createAsyncThunk('auth/logout', async () => {
   await signOut(auth);
+  // Çıkış yapınca tercihi sil — sonraki girişte kullanıcı yeniden seçsin
+  await AsyncStorage.removeItem(REMEMBER_ME_KEY);
 });
+
+// ─── Slice ────────────────────────────────────────────────────────────────────
 
 const authSlice = createSlice({
   name: 'auth',
@@ -101,6 +117,7 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state) => {
         state.loading = false;
+        // Kullanıcı onAuthStateChanged → setUser ile set edilir
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;

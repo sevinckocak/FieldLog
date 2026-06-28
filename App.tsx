@@ -3,7 +3,7 @@ import './src/i18n';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -16,16 +16,47 @@ import RootNavigator from './src/navigation/RootNavigator';
 import OnboardingScreen from './src/screens/onboarding/OnboardingScreen';
 import { useColorScheme } from 'nativewind';
 import { useAppDispatch, useAppSelector } from './src/store/hooks';
-import { setUser } from './src/store/slices/authSlice';
+import { REMEMBER_ME_KEY, setUser } from './src/store/slices/authSlice';
 import { setLocale, selectLocale } from './src/store/slices/languageSlice';
 import { selectThemeMode, setTheme } from './src/store/slices/themeSlice';
 import { store } from './src/store';
 import type { ThemeMode } from './src/theme';
 
+/**
+ * Firebase auth durumunu dinler.
+ *
+ * Akış:
+ * 1. AsyncStorage'dan "Beni Hatırla" tercihi okunur.
+ * 2. Tercih "false" ise signOut yapılarak saklanan token silinir.
+ * 3. Ardından onAuthStateChanged'e abone olunur.
+ *    Bu sıralamayı bozmak, kullanıcının hatırlanmak istemediği hâlde
+ *    önceki oturumun anlık flash şeklinde görünmesine yol açar.
+ */
 function AuthListener() {
   const dispatch = useAppDispatch();
+  const [sessionChecked, setSessionChecked] = useState(false);
 
+  // Adım 1 — "Beni Hatırla" kontrolü
   useEffect(() => {
+    (async () => {
+      try {
+        const remembered = await AsyncStorage.getItem(REMEMBER_ME_KEY);
+        if (remembered === 'false') {
+          // Kullanıcı kalıcı oturum istememiş — Firebase token'ı temizle
+          await signOut(auth).catch(() => {});
+        }
+        // remembered === null veya 'true' ise dokunmuyoruz;
+        // Firebase saklanan oturumu geri yükler.
+      } finally {
+        setSessionChecked(true);
+      }
+    })();
+  }, []);
+
+  // Adım 2 — Yalnızca kontrol tamamlandıktan sonra auth state'i dinle
+  useEffect(() => {
+    if (!sessionChecked) return;
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       dispatch(
         setUser(
@@ -41,7 +72,7 @@ function AuthListener() {
       );
     });
     return unsubscribe;
-  }, [dispatch]);
+  }, [sessionChecked, dispatch]);
 
   return null;
 }
@@ -86,7 +117,6 @@ function AppContent() {
         dispatch(setLocale(validLocale));
         await i18n.changeLanguage(validLocale);
       } else {
-        // Sistem dilini algıla, desteklenen bir locale varsa kullan
         const systemLang = getLocales()[0]?.languageCode ?? '';
         const detected = SUPPORTED_LOCALES.includes(systemLang as Locale)
           ? (systemLang as Locale)
