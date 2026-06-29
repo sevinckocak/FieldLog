@@ -3,6 +3,7 @@
   "sections": {
     "appearance": "Aussehen",
     "preferences": "Einstellungen",
+    "insights": "Statistiken",
     "about": "Über die App",
     "account": "Konto"
   },
@@ -10,6 +11,7 @@
     "theme": "Design",
     "language": "Sprache",
     "notifications": "Benachrichtigungen",
+    "analytics": "Analyse-Dashboard",
     "version": "App-Version",
     "privacy": "Datenschutz",
     "logout": "Abmelden"
@@ -21,5 +23,25 @@
     "title": "Abmelden",
     "message": "Möchtest du dich wirklich abmelden?",
     "confirm": "Abmelden"
+  },
+  "analytics": {
+    "title": "Analytik",
+    "subtitle": "Deine Aufgaben-Performance",
+    "totalTasks": "Gesamt Aufgaben",
+    "completed": "Abgeschlossen",
+    "pending": "Ausstehend",
+    "highPriority": "Hohe Priorität",
+    "completionRate": "Abschlussrate",
+    "thisMonth": "Dieser Monat",
+    "completionOverview": "Abschluss Übersicht",
+    "weeklyActivity": "Wöchentliche Aktivität",
+    "priorityBreakdown": "Prioritätsverteilung",
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "none": "Keine",
+    "tasks": "Aufgaben",
+    "noData": "Noch keine Aufgaben",
+    "noDataSub": "Erstelle deine erste Aufgabe für Analysen"
   }
 }

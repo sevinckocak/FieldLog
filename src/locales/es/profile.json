@@ -3,6 +3,7 @@
   "sections": {
     "appearance": "Apariencia",
     "preferences": "Preferencias",
+    "insights": "Estadísticas",
     "about": "Acerca de",
     "account": "Cuenta"
   },
@@ -10,6 +11,7 @@
     "theme": "Tema",
     "language": "Idioma",
     "notifications": "Notificaciones",
+    "analytics": "Panel de Analíticas",
     "version": "Versión de la app",
     "privacy": "Política de privacidad",
     "logout": "Cerrar sesión"
@@ -21,5 +23,25 @@
     "title": "Cerrar sesión",
     "message": "¿Estás seguro de que quieres cerrar sesión?",
     "confirm": "Cerrar sesión"
+  },
+  "analytics": {
+    "title": "Analíticas",
+    "subtitle": "Tu rendimiento de tareas",
+    "totalTasks": "Total de Tareas",
+    "completed": "Completadas",
+    "pending": "Pendientes",
+    "highPriority": "Alta Prioridad",
+    "completionRate": "Tasa de Completado",
+    "thisMonth": "Este Mes",
+    "completionOverview": "Resumen de Completado",
+    "weeklyActivity": "Actividad Semanal",
+    "priorityBreakdown": "Distribución por Prioridad",
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta",
+    "none": "Sin prioridad",
+    "tasks": "tareas",
+    "noData": "Aún no hay tareas",
+    "noDataSub": "Crea tu primera tarea para ver analíticas"
   }
 }

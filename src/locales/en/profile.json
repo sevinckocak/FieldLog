@@ -3,6 +3,7 @@
   "sections": {
     "appearance": "Appearance",
     "preferences": "Preferences",
+    "insights": "Insights",
     "about": "About",
     "account": "Account"
   },
@@ -10,6 +11,7 @@
     "theme": "Theme",
     "language": "Language",
     "notifications": "Notifications",
+    "analytics": "Analytics Dashboard",
     "version": "App Version",
     "privacy": "Privacy Policy",
     "logout": "Sign Out"
@@ -21,5 +23,25 @@
     "title": "Sign Out",
     "message": "Are you sure you want to sign out?",
     "confirm": "Sign Out"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Your task performance",
+    "totalTasks": "Total Tasks",
+    "completed": "Completed",
+    "pending": "Pending",
+    "highPriority": "High Priority",
+    "completionRate": "Completion Rate",
+    "thisMonth": "This Month",
+    "completionOverview": "Completion Overview",
+    "weeklyActivity": "Weekly Activity",
+    "priorityBreakdown": "Priority Breakdown",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "none": "None",
+    "tasks": "tasks",
+    "noData": "No tasks yet",
+    "noDataSub": "Create your first task to see analytics"
   }
 }

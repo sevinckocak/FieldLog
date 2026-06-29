@@ -3,6 +3,7 @@
   "sections": {
     "appearance": "Görünüm",
     "preferences": "Tercihler",
+    "insights": "İstatistikler",
     "about": "Hakkında",
     "account": "Hesap"
   },
@@ -10,6 +11,7 @@
     "theme": "Tema",
     "language": "Dil",
     "notifications": "Bildirimler",
+    "analytics": "Analitik Paneli",
     "version": "Uygulama Versiyonu",
     "privacy": "Gizlilik Politikası",
     "logout": "Çıkış Yap"
@@ -21,5 +23,25 @@
     "title": "Çıkış Yap",
     "message": "Hesabından çıkmak istediğinden emin misin?",
     "confirm": "Çıkış Yap"
+  },
+  "analytics": {
+    "title": "Analitik",
+    "subtitle": "Görev performansın",
+    "totalTasks": "Toplam Görev",
+    "completed": "Tamamlandı",
+    "pending": "Bekliyor",
+    "highPriority": "Yüksek Öncelik",
+    "completionRate": "Tamamlanma Oranı",
+    "thisMonth": "Bu Ay",
+    "completionOverview": "Tamamlanma Özeti",
+    "weeklyActivity": "Haftalık Aktivite",
+    "priorityBreakdown": "Öncelik Dağılımı",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "none": "Yok",
+    "tasks": "görev",
+    "noData": "Henüz görev yok",
+    "noDataSub": "Analitiği görmek için ilk görevini oluştur"
   }
 }

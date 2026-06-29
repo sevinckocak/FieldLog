@@ -3,6 +3,7 @@
   "sections": {
     "appearance": "Apparence",
     "preferences": "Préférences",
+    "insights": "Statistiques",
     "about": "À propos",
     "account": "Compte"
   },
@@ -10,6 +11,7 @@
     "theme": "Thème",
     "language": "Langue",
     "notifications": "Notifications",
+    "analytics": "Tableau de Bord Analytique",
     "version": "Version de l'app",
     "privacy": "Politique de confidentialité",
     "logout": "Se déconnecter"
@@ -21,5 +23,25 @@
     "title": "Se déconnecter",
     "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
     "confirm": "Se déconnecter"
+  },
+  "analytics": {
+    "title": "Analytique",
+    "subtitle": "Performance de vos tâches",
+    "totalTasks": "Total des Tâches",
+    "completed": "Terminées",
+    "pending": "En Attente",
+    "highPriority": "Haute Priorité",
+    "completionRate": "Taux de Complétion",
+    "thisMonth": "Ce Mois",
+    "completionOverview": "Aperçu de Complétion",
+    "weeklyActivity": "Activité Hebdomadaire",
+    "priorityBreakdown": "Répartition par Priorité",
+    "low": "Faible",
+    "medium": "Moyen",
+    "high": "Élevée",
+    "none": "Aucune",
+    "tasks": "tâches",
+    "noData": "Pas encore de tâches",
+    "noDataSub": "Créez votre première tâche pour voir les analyses"
   }
 }

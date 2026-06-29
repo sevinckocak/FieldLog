@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import MapScreen from "../features/map/screens/MapScreen";
 import TaskListScreen from "../features/tasks/screens/TaskListScreen";
-import ProfileScreen from "../features/profile/screens/ProfileScreen";
+import ProfileStackNavigator from "./ProfileStackNavigator";
 import { useTheme } from "../hooks/useTheme";
 
 const Tab = createBottomTabNavigator();
@@ -51,9 +51,9 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="Profil"
-        component={ProfileScreen}
+        component={ProfileStackNavigator}
         options={{
-          title: t('tabs.profile'),
+          headerShown: false,
           tabBarLabel: t('tabs.profile'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
