@@ -15,5 +15,8 @@
     "title": "Agregar tarea",
     "titlePlaceholder": "Título",
     "descriptionPlaceholder": "Descripción"
+  },
+  "heatmap": {
+    "label": "Mapa de Calor"
   }
 }

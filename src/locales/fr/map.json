@@ -15,5 +15,8 @@
     "title": "Ajouter une tâche",
     "titlePlaceholder": "Titre",
     "descriptionPlaceholder": "Description"
+  },
+  "heatmap": {
+    "label": "Carte Thermique"
   }
 }

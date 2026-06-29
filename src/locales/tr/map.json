@@ -15,5 +15,8 @@
     "title": "Görev Ekle",
     "titlePlaceholder": "Başlık",
     "descriptionPlaceholder": "Açıklama"
+  },
+  "heatmap": {
+    "label": "Isı Haritası"
   }
 }

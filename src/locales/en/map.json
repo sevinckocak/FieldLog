@@ -15,5 +15,8 @@
     "title": "Add Task",
     "titlePlaceholder": "Title",
     "descriptionPlaceholder": "Description"
+  },
+  "heatmap": {
+    "label": "Heatmap"
   }
 }

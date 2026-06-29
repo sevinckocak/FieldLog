@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, {
   LongPressEvent,
   MapType,
   Marker,
   Polyline,
+  Region,
 } from "react-native-maps";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../../hooks/useTheme";
 import useLocation from "../../../hooks/useLocation";
@@ -21,6 +23,7 @@ import {
 import { Task } from "../../../types";
 import AddTaskModal from "../components/AddTaskModal";
 import ThemeSwitch from "../components/ThemeSwitch";
+import TaskHeatmap from "../components/TaskHeatmap";
 
 const MAP_TYPES: { label: string; value: MapType }[] = [
   { label: "Standard", value: "standard" },
@@ -31,9 +34,19 @@ const MAP_TYPES: { label: string; value: MapType }[] = [
 
 // Rota noktası tipine göre marker rengi
 function routeMarkerColor(index: number, total: number): string {
-  if (index === 0) return "#22c55e";     // Başlangıç → yeşil
-  if (index === total - 1) return "#ef4444"; // Son → kırmızı
-  return "#f97316";                          // Ara durak → turuncu
+  if (index === 0) return "#22c55e";
+  if (index === total - 1) return "#ef4444";
+  return "#f97316";
+}
+
+// Haritanın longitudeDelta'sından heatmap piksel yarıçapı hesapla.
+// Daha düşük delta = daha yakın zoom = daha büyük piksel yarıçapı.
+function radiusFromRegion(longitudeDelta: number): number {
+  if (longitudeDelta < 0.005) return 60;
+  if (longitudeDelta < 0.02) return 50;
+  if (longitudeDelta < 0.08) return 40;
+  if (longitudeDelta < 0.3) return 30;
+  return 20;
 }
 
 export default function MapScreen() {
@@ -57,6 +70,24 @@ export default function MapScreen() {
   } | null>(null);
   const [mapType, setMapType] = useState<MapType>("hybrid");
   const [selectorVisible, setSelectorVisible] = useState(false);
+  const [heatmapVisible, setHeatmapVisible] = useState(false);
+  const [longitudeDelta, setLongitudeDelta] = useState(0.01);
+
+  // Heatmap opacity: harita tipine göre ayarla (koyu zemin üzerinde daha yoğun)
+  const heatmapOpacity = useMemo(
+    () => (mapType === 'standard' ? 0.62 : 0.78),
+    [mapType],
+  );
+
+  // Heatmap yarıçapı zoom seviyesine göre dinamik güncellenir
+  const heatmapRadius = useMemo(
+    () => radiusFromRegion(longitudeDelta),
+    [longitudeDelta],
+  );
+
+  const handleRegionChangeComplete = useCallback((region: Region) => {
+    setLongitudeDelta(region.longitudeDelta);
+  }, []);
 
   // Rota aktif olduğunda tüm noktaları ekrana sığdır
   useEffect(() => {
@@ -67,7 +98,6 @@ export default function MapScreen() {
       longitude: p.lng,
     }));
 
-    // Kısa gecikme: harita tam render olduktan sonra fit et
     const timer = setTimeout(() => {
       mapRef.current?.fitToCoordinates(coords, {
         edgePadding: { top: 80, right: 50, bottom: 160, left: 50 },
@@ -79,7 +109,7 @@ export default function MapScreen() {
   }, [routeActive, routePoints]);
 
   const handleLongPress = (event: LongPressEvent) => {
-    if (routeActive) return; // Rota modunda uzun basma devre dışı
+    if (routeActive) return;
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setSelectedCoord({ lat: latitude, lng: longitude });
     setModalVisible(true);
@@ -124,7 +154,17 @@ export default function MapScreen() {
         }}
         showsUserLocation
         onLongPress={handleLongPress}
+        onRegionChangeComplete={handleRegionChangeComplete}
       >
+        {/* ── Heatmap katmanı (tüm modlarda aktif olabilir) ── */}
+        {heatmapVisible && (
+          <TaskHeatmap
+            tasks={tasks}
+            radius={heatmapRadius}
+            opacity={heatmapOpacity}
+          />
+        )}
+
         {/* Normal mod: tüm görev marker'ları */}
         {!routeActive &&
           tasks.map((task) => (
@@ -140,7 +180,6 @@ export default function MapScreen() {
         {/* Rota modu: rota noktaları + polyline */}
         {routeActive && (
           <>
-            {/* Gerçek yol veya düz çizgi */}
             {routePolyline && routePolyline.length > 0 && (
               <Polyline
                 coordinates={routePolyline}
@@ -150,7 +189,6 @@ export default function MapScreen() {
               />
             )}
 
-            {/* Rota marker'ları */}
             {routePoints.map((point, index) => (
               <Marker
                 key={`route-${index}`}
@@ -174,12 +212,47 @@ export default function MapScreen() {
         )}
       </MapView>
 
-      {/* Theme switch - sol üst */}
-      <View className="absolute top-4 left-4">
+      {/* ── Sol kontroller: tema + heatmap toggle ── */}
+      <View style={styles.leftControls}>
         <ThemeSwitch />
+
+        <TouchableOpacity
+          style={[
+            styles.shadow,
+            styles.heatmapBtn,
+            {
+              backgroundColor: heatmapVisible
+                ? colors.primary
+                : colors.mapOverlay,
+            },
+          ]}
+          onPress={() => setHeatmapVisible((v) => !v)}
+          activeOpacity={0.75}
+        >
+          <Ionicons
+            name={heatmapVisible ? 'flame' : 'flame-outline'}
+            size={14}
+            color={heatmapVisible ? '#FFFFFF' : colors.textSecondary}
+          />
+          <Text
+            style={[
+              styles.heatmapBtnText,
+              {
+                color: heatmapVisible ? '#FFFFFF' : colors.textPrimary,
+              },
+            ]}
+          >
+            {tMap('heatmap.label')}
+          </Text>
+          {heatmapVisible && tasks.length > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{tasks.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
-      {/* Harita tipi seçici - sağ üst */}
+      {/* ── Harita tipi seçici — sağ üst ── */}
       <View className="absolute top-4 right-4">
         <TouchableOpacity
           className="rounded-lg px-3 py-2"
@@ -221,7 +294,7 @@ export default function MapScreen() {
         )}
       </View>
 
-      {/* Rota bilgi paneli */}
+      {/* ── Rota bilgi paneli ── */}
       {routeActive && (
         <View
           className="absolute bottom-0 left-0 right-0 px-4 py-3"
@@ -246,7 +319,6 @@ export default function MapScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Durak listesi */}
           <View className="flex-row flex-wrap gap-1">
             {routePoints.map((point, index) => {
               const isStart = index === 0;
@@ -290,7 +362,7 @@ export default function MapScreen() {
         </View>
       )}
 
-      {/* Görev ekleme modal'ı (sadece normal modda) */}
+      {/* ── Görev ekleme modal'ı (sadece normal modda) ── */}
       {selectedCoord && (
         <AddTaskModal
           visible={modalVisible}
@@ -311,5 +383,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 3,
+  },
+  leftControls: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    gap: 8,
+    alignItems: 'flex-start',
+  },
+  heatmapBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    gap: 5,
+  },
+  heatmapBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  badge: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    minWidth: 18,
+    alignItems: 'center',
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '700',
   },
 });

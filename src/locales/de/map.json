@@ -15,5 +15,8 @@
     "title": "Aufgabe hinzufügen",
     "titlePlaceholder": "Titel",
     "descriptionPlaceholder": "Beschreibung"
+  },
+  "heatmap": {
+    "label": "Heatmap"
   }
 }
